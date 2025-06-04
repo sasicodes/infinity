@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+body {
+  @apply bg-black text-white text-sm min-h-screen;
+}
+
+@theme {
+  --shadow-overlay: 0px 2px 14px 0px rgba(0, 0, 0, 0.2);
+}
+
+.react-flow__pane.draggable {
+  cursor: pointer !important;
+}
