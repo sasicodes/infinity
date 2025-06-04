@@ -1,15 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { db } from "../lib/idb";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Image, Type, Trash2, Code2 } from "lucide-react";
+import { Image, Type, Trash2, Code2, Loader } from "lucide-react";
 import type { Edge } from "@xyflow/react";
 import { AnimatePresence, motion } from "motion/react";
+import { useGenerate } from "../lib/hooks/use-generate";
 
 interface ContentProps {
   nodeId: string;
 }
 
 export const Content = ({ nodeId }: ContentProps) => {
+  const { completion, generate, streaming } = useGenerate();
+
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -61,7 +64,7 @@ export const Content = ({ nodeId }: ContentProps) => {
       content?.content?.trim()
     ).length;
 
-    return { images, texts };
+    return { images, texts, parentContents };
   }, [edges, nodeId]);
 
   // Initialize new node in IndexedDB
@@ -140,13 +143,34 @@ export const Content = ({ nodeId }: ContentProps) => {
     }
   };
 
+  const handleGenerateCode = async () => {
+    const content =
+      parentContent?.parentContents
+        ?.map((content) => content?.content)
+        .join("\n") || "";
+    await generate(content);
+  };
+
   if (isLoading) {
     return null;
   }
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center transition-opacity duration-200">
-      {image ? (
+      {streaming ? (
+        <div className="flex h-full w-full items-center justify-center">
+          <Loader className="size-2 animate-spin" />
+        </div>
+      ) : completion ? (
+        <div className="h-full w-full">
+          <iframe
+            srcDoc={completion}
+            title="Generated content"
+            className="h-full w-full overflow-hidden rounded-sm border-none"
+            sandbox="allow-scripts"
+          />
+        </div>
+      ) : image ? (
         <div className="relative h-full w-full">
           <img
             src={image}
@@ -233,9 +257,7 @@ export const Content = ({ nodeId }: ContentProps) => {
                 <button
                   type="button"
                   className="flex cursor-pointer items-center gap-1 font-normal text-gray-300 text-xs leading-none hover:text-white"
-                  onClick={() => {
-                    // TODO: Implement generation logic
-                  }}
+                  onClick={handleGenerateCode}
                   onKeyDown={handleKeyDown}
                 >
                   <Code2 className="size-3" />
