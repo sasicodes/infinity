@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { db } from "../lib/idb";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Image, Type, Trash2, Sparkles } from "lucide-react";
+import { Image, Type, Trash2, Code2 } from "lucide-react";
 import type { Edge } from "@xyflow/react";
+import { AnimatePresence, motion } from "motion/react";
 
 interface ContentProps {
   nodeId: string;
@@ -218,42 +219,48 @@ export const Content = ({ nodeId }: ContentProps) => {
             <Type className="size-3" />
             Write or paste text
           </button>
-          {parentContent &&
-          (parentContent.images > 0 || parentContent.texts > 0) ? (
-            <>
-              <span className="text-[10px] text-neutral-500">or</span>
-              <button
-                type="button"
-                className="flex cursor-pointer items-center gap-1 font-normal text-gray-300 text-xs leading-none hover:text-white"
-                onClick={() => {
-                  // TODO: Implement generation logic
-                }}
-                onKeyDown={handleKeyDown}
+          <AnimatePresence>
+            {parentContent &&
+            (parentContent.images > 0 || parentContent.texts > 0) ? (
+              <motion.div
+                className="flex flex-col items-center gap-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.2 }}
               >
-                <Sparkles className="size-3" />
-                Generate
-              </button>
-              <div className="mt-1 cursor-default select-none text-[10px] text-neutral-500">
-                {parentContent.images > 0 && (
-                  <span>
-                    {parentContent.images} image
-                    {parentContent.images > 1 ? "s" : ""}
-                  </span>
-                )}
-                {parentContent.images > 0 && parentContent.texts > 0 && (
-                  <span> • </span>
-                )}
-                {parentContent.texts > 0 && (
-                  <span>
-                    {parentContent.texts} text
-                    {parentContent.texts > 1 ? "s" : ""}
-                  </span>
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="h-[60px]" />
-          )}
+                <span className="text-[10px] text-neutral-500">or</span>
+                <button
+                  type="button"
+                  className="flex cursor-pointer items-center gap-1 font-normal text-gray-300 text-xs leading-none hover:text-white"
+                  onClick={() => {
+                    // TODO: Implement generation logic
+                  }}
+                  onKeyDown={handleKeyDown}
+                >
+                  <Code2 className="size-3" />
+                  Generate Code
+                </button>
+                <div className="mt-1 cursor-default select-none text-[10px] text-neutral-500">
+                  {parentContent.images > 0 && (
+                    <span>
+                      {parentContent.images} image
+                      {parentContent.images > 1 ? "s" : ""}
+                    </span>
+                  )}
+                  {parentContent.images > 0 && parentContent.texts > 0 && (
+                    <span> • </span>
+                  )}
+                  {parentContent.texts > 0 && (
+                    <span>
+                      {parentContent.texts} text
+                      {parentContent.texts > 1 ? "s" : ""}
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </div>
       )}
     </div>

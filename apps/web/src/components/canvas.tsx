@@ -33,6 +33,7 @@ const Flow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition } = useReactFlow();
+  const saveTimeoutRef = useRef<number | undefined>(undefined);
 
   // Load initial data from IndexedDB
   useEffect(() => {
@@ -46,12 +47,21 @@ const Flow = () => {
     loadData();
   }, [setNodes, setEdges]);
 
-  // Save data to IndexedDB whenever nodes or edges change
+  // Save data to IndexedDB with debouncing
   useEffect(() => {
-    const saveData = async () => {
+    if (saveTimeoutRef.current) {
+      window.clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = window.setTimeout(async () => {
       await saveFlowData({ nodes, edges });
+    }, 500); // Debounce for 500ms
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        window.clearTimeout(saveTimeoutRef.current);
+      }
     };
-    saveData();
   }, [nodes, edges]);
 
   const validateConnection = useCallback(
