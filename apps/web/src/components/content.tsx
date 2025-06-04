@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { db } from "../lib/idb";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Image, Type, Trash2 } from "lucide-react";
+import { Image, Type, Trash2, Sparkles } from "lucide-react";
+import type { Edge } from "@xyflow/react";
 
 interface ContentProps {
   nodeId: string;
@@ -14,9 +15,53 @@ export const Content = ({ nodeId }: ContentProps) => {
 
   // Use live query to read from IndexedDB
   const nodeData = useLiveQuery(() => db.nodeContent.get(nodeId), [nodeId]);
+  const edges = useLiveQuery(() =>
+    db.flowData
+      .orderBy("id")
+      .last()
+      .then((data) => data?.edges ?? [])
+  );
+
   const content = nodeData?.content || "";
   const image = nodeData?.image;
   const isLoading = nodeData === undefined;
+
+  // Get parent nodes and their content
+  const parentContent = useLiveQuery(async () => {
+    if (!edges?.length) return { images: 0, texts: 0 };
+
+    // Check if node has any right-side connections
+    const hasRightConnections = edges.some((edge) => edge.source === nodeId);
+    if (hasRightConnections) return { images: 0, texts: 0 };
+
+    const parentNodes = new Set<string>();
+    const traverse = (currentId: string) => {
+      const parentEdges =
+        edges?.filter((edge: Edge) => edge.target === currentId) ?? [];
+      for (const edge of parentEdges) {
+        const parentId = edge.source;
+        if (!parentNodes.has(parentId)) {
+          parentNodes.add(parentId);
+          traverse(parentId);
+        }
+      }
+    };
+
+    traverse(nodeId);
+    const parentIds = Array.from(parentNodes);
+    if (parentIds.length === 0) return { images: 0, texts: 0 };
+
+    const parentContents = await Promise.all(
+      parentIds.map((id) => db.nodeContent.get(id))
+    );
+
+    const images = parentContents.filter((content) => content?.image).length;
+    const texts = parentContents.filter((content) =>
+      content?.content?.trim()
+    ).length;
+
+    return { images, texts };
+  }, [edges, nodeId]);
 
   // Initialize new node in IndexedDB
   useEffect(() => {
@@ -173,6 +218,40 @@ export const Content = ({ nodeId }: ContentProps) => {
             <Type className="size-3" />
             Write or paste text
           </button>
+          {parentContent &&
+          (parentContent.images > 0 || parentContent.texts > 0) ? (
+            <>
+              <span className="text-[10px] text-neutral-500">or</span>
+              <button
+                type="button"
+                className="flex cursor-pointer items-center gap-1 font-normal text-gray-300 text-xs leading-none hover:text-white"
+                onClick={() => {
+                  // TODO: Implement generation logic
+                }}
+                onKeyDown={handleKeyDown}
+              >
+                <Sparkles className="size-3" />
+                Generate
+              </button>
+              <div className="mt-1 cursor-default select-none text-[10px] text-neutral-500">
+                {parentContent.images > 0 && (
+                  <span>
+                    {parentContent.images} image
+                    {parentContent.images > 1 ? "s" : ""}
+                  </span>
+                )}
+                {parentContent.images > 0 && parentContent.texts > 0 && (
+                  <span> • </span>
+                )}
+                {parentContent.texts > 0 && (
+                  <span>
+                    {parentContent.texts} text
+                    {parentContent.texts > 1 ? "s" : ""}
+                  </span>
+                )}
+              </div>
+            </>
+          ) : null}
         </div>
       )}
     </div>
