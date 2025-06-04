@@ -144,7 +144,7 @@ export const Content = ({ nodeId }: ContentProps) => {
   }
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
+    <div className="flex h-full w-full flex-col items-center justify-center transition-opacity duration-200">
       {image ? (
         <div className="relative h-full w-full">
           <img
@@ -189,7 +189,7 @@ export const Content = ({ nodeId }: ContentProps) => {
         </div>
       ) : (
         <div
-          className="flex h-full w-full scale-50 cursor-pointer flex-col items-center justify-center gap-2"
+          className="flex h-full w-full scale-50 cursor-pointer flex-col items-center justify-center gap-2 transition-opacity duration-200"
           onKeyDown={handleKeyDown}
         >
           <input
@@ -251,7 +251,9 @@ export const Content = ({ nodeId }: ContentProps) => {
                 )}
               </div>
             </>
-          ) : null}
+          ) : (
+            <div className="h-[60px]" />
+          )}
         </div>
       )}
     </div>
