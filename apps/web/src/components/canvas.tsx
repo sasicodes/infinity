@@ -13,12 +13,17 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useCallback, useRef, useEffect } from "react";
 import { CustomNode } from "./node";
-import { loadFlowData, saveFlowData } from "../lib/idb";
+import { CustomEdge } from "./edge";
+import { loadFlowData, saveFlowData, db } from "../lib/idb";
 import { v4 as uuidv4 } from "uuid";
 import { useSelectAll } from "../lib/hooks/use-select-all";
 
 const nodeTypes = {
   custom: CustomNode
+};
+
+const edgeTypes = {
+  custom: CustomEdge
 };
 
 const initialNodes: Node[] = [];
@@ -50,20 +55,65 @@ const Flow = () => {
     saveData();
   }, [nodes, edges]);
 
-  const onConnect = useCallback(
+  const validateConnection = useCallback(
     (params: Connection) => {
       // Prevent self-loop
-      if (params.source === params.target) return;
+      if (params.source === params.target) return false;
 
-      // Prevent reverse connection (if an edge already exists from target to source)
+      // Prevent reverse connection
       const reverseExists = edges.some(
         (e) => e.source === params.target && e.target === params.source
       );
-      if (reverseExists) return;
+      if (reverseExists) return false;
 
+      // Prevent connecting to a node that already has a right-side connection
+      const targetHasRightConnection = edges.some(
+        (e) => e.source === params.target
+      );
+      if (targetHasRightConnection) return false;
+
+      return true;
+    },
+    [edges]
+  );
+
+  const getNodeDetails = useCallback(
+    async (nodeId: string) => {
+      const node = nodes.find((n) => n.id === nodeId);
+      const content = await db.nodeContent.get(nodeId);
+
+      return {
+        id: node?.id,
+        data: node?.data,
+        content: content?.content,
+        image: content?.image
+      };
+    },
+    [nodes]
+  );
+
+  const logConnectionDetails = useCallback(
+    async (sourceId: string, targetId: string) => {
+      const sourceDetails = await getNodeDetails(sourceId);
+      const targetDetails = await getNodeDetails(targetId);
+
+      console.info("Node Connection:", {
+        source: sourceDetails,
+        target: targetDetails
+      });
+    },
+    [getNodeDetails]
+  );
+
+  const onConnect = useCallback(
+    async (params: Connection) => {
+      if (!validateConnection(params)) return;
+      if (!params.source || !params.target) return;
+
+      await logConnectionDetails(params.source, params.target);
       setEdges((eds) => addEdge(params, eds));
     },
-    [setEdges, edges]
+    [validateConnection, logConnectionDetails, setEdges]
   );
 
   const onPaneClick = useCallback(
@@ -100,7 +150,10 @@ const Flow = () => {
             edges
           }
         }))}
-        edges={edges}
+        edges={edges.map((edge) => ({
+          ...edge,
+          type: "custom"
+        }))}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
@@ -109,6 +162,7 @@ const Flow = () => {
         fitView
         defaultViewport={{ x: 0, y: 0, zoom: 1 }}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
       >
         <Background variant={BackgroundVariant.Dots} gap={15} size={0.5} />
       </ReactFlow>
