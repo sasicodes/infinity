@@ -3,7 +3,6 @@ import {
   ReactFlow,
   BackgroundVariant,
   useNodesState,
-  addEdge,
   useEdgesState,
   type Connection,
   type Node,
@@ -72,6 +71,12 @@ const Flow = () => {
       );
       if (targetHasRightConnection) return false;
 
+      // Prevent reconnecting the same nodes
+      const sameConnectionExists = edges.some(
+        (e) => e.source === params.source && e.target === params.target
+      );
+      if (sameConnectionExists) return false;
+
       return true;
     },
     [edges]
@@ -92,17 +97,25 @@ const Flow = () => {
     [nodes]
   );
 
-  const logConnectionDetails = useCallback(
-    async (sourceId: string, targetId: string) => {
-      const sourceDetails = await getNodeDetails(sourceId);
-      const targetDetails = await getNodeDetails(targetId);
+  const getAllParentNodes = useCallback(
+    (nodeId: string, edges: Edge[]): string[] => {
+      const parentNodes = new Set<string>();
 
-      console.info("Node Connection:", {
-        source: sourceDetails,
-        target: targetDetails
-      });
+      const traverse = (currentId: string) => {
+        const parentEdges = edges.filter((edge) => edge.target === currentId);
+        for (const edge of parentEdges) {
+          const parentId = edge.source;
+          if (!parentNodes.has(parentId)) {
+            parentNodes.add(parentId);
+            traverse(parentId);
+          }
+        }
+      };
+
+      traverse(nodeId);
+      return Array.from(parentNodes);
     },
-    [getNodeDetails]
+    []
   );
 
   const onConnect = useCallback(
@@ -110,10 +123,39 @@ const Flow = () => {
       if (!validateConnection(params)) return;
       if (!params.source || !params.target) return;
 
-      await logConnectionDetails(params.source, params.target);
-      setEdges((eds) => addEdge(params, eds));
+      const newEdge = {
+        id: `edge-${params.source}-${params.target}`,
+        source: params.source,
+        target: params.target,
+        type: "custom"
+      };
+
+      const updatedEdges = [...edges, newEdge];
+      setEdges(updatedEdges);
+
+      const parentNodes = getAllParentNodes(params.target, updatedEdges);
+      const parentContents = await Promise.all(
+        parentNodes.map((id) => db.nodeContent.get(id))
+      );
+
+      const images: string[] = [];
+      const texts: string[] = [];
+
+      for (const content of parentContents) {
+        if (content?.image) images.push(content.image);
+        if (content?.content?.trim()) texts.push(content.content.trim());
+      }
+
+      const parentContent = { images, texts };
+
+      console.info("=== Node Connection ===", {
+        source: await getNodeDetails(params.source),
+        target: await getNodeDetails(params.target),
+        parentContent,
+        currentEdges: updatedEdges
+      });
     },
-    [validateConnection, logConnectionDetails, setEdges]
+    [validateConnection, getNodeDetails, edges, setEdges, getAllParentNodes]
   );
 
   const onPaneClick = useCallback(
