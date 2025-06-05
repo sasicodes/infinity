@@ -150,30 +150,8 @@ const Flow = () => {
 
       const updatedEdges = [...edges, newEdge];
       setEdges(updatedEdges);
-
-      const parentNodes = getAllParentNodes(params.target, updatedEdges);
-      const parentContents = await Promise.all(
-        parentNodes.map((id) => db.nodeContent.get(id))
-      );
-
-      const images: string[] = [];
-      const texts: string[] = [];
-
-      for (const content of parentContents) {
-        if (content?.image) images.push(content.image);
-        if (content?.content?.trim()) texts.push(content.content.trim());
-      }
-
-      const parentContent = { images, texts };
-
-      console.info("=== Node Connection ===", {
-        source: await getNodeDetails(params.source),
-        target: await getNodeDetails(params.target),
-        parentContent,
-        currentEdges: updatedEdges
-      });
     },
-    [validateConnection, getNodeDetails, edges, setEdges, getAllParentNodes]
+    [validateConnection, edges, setEdges]
   );
 
   const onPaneClick = useCallback(
@@ -223,7 +201,6 @@ const Flow = () => {
         fitView
         panOnScroll
         zoomOnDoubleClick={false}
-        // panOnDrag={false}
         deleteKeyCode={["Backspace", "Delete"]}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}

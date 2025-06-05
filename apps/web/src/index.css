@@ -7,3 +7,13 @@ body {
 @theme {
   --shadow-overlay: 0px 2px 14px 0px rgba(0, 0, 0, 0.2);
 }
+
+/* no scrollbar */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}

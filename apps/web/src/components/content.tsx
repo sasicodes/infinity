@@ -73,7 +73,7 @@ export const Content = ({ nodeId }: ContentProps) => {
     const initNode = async () => {
       const exists = await db.nodeContent.get(nodeId);
       if (!exists) {
-        await db.nodeContent.add({
+        await db.nodeContent.put({
           id: nodeId,
           content: "",
           image: undefined,

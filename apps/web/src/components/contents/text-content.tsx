@@ -66,7 +66,7 @@ export const TextContent = ({
         onBlur={handleTextBlur}
         onKeyDown={onKeyDown}
         placeholder="Write something..."
-        className="h-[200%] w-[200%] resize-none bg-transparent p-2 text-black text-sm outline-none [transform-origin:top_left] [transform:scale(0.5)]"
+        className="h-[200%] w-[200%] resize-none bg-transparent p-2 text-black text-sm outline-none [scrollbar-width:thin] [transform-origin:top_left] [transform:scale(0.5)]"
       />
     </div>
   );
