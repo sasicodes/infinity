@@ -3,7 +3,7 @@ import { db } from "../../lib/idb";
 
 interface ImageContentProps {
   nodeId: string;
-  image: string;
+  image: string | Blob;
   content: string;
   isEditing: boolean;
   setIsEditing: (editing: boolean) => void;
@@ -24,7 +24,7 @@ export const ImageContent = ({
         Image
       </div>
       <img
-        src={image}
+        src={image instanceof Blob ? URL.createObjectURL(image) : image}
         alt="Node content"
         className="h-full w-full rounded-lg object-cover"
         draggable={false}

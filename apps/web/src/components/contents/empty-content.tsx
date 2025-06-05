@@ -37,14 +37,14 @@ export const EmptyContent = ({
 
     const reader = new FileReader();
     reader.onload = async (event) => {
-      const result = event.target?.result as string;
+      const result = event.target?.result as ArrayBuffer;
       await db.nodeContent.put({
         id: nodeId,
         content,
-        image: result
+        image: new Blob([result], { type: file.type })
       });
     };
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
   };
 
   return (

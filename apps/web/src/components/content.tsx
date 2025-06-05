@@ -8,6 +8,7 @@ import { TextContent } from "./contents/text-content";
 import { EmptyContent } from "./contents/empty-content";
 import { GenerateContent } from "./contents/generate-content";
 import { Loader } from "./loader";
+import { uploadImage } from "../lib/upload";
 
 interface ContentProps {
   nodeId: string;
@@ -100,14 +101,21 @@ export const Content = ({ nodeId }: ContentProps) => {
   };
 
   const handleGenerateCode = async () => {
+    const images =
+      parentContent?.parentContents?.map((content) => content?.image) || [];
+    const imageUrls = await Promise.all(
+      images.map((image) => uploadImage(image as File))
+    ).then((urls) => urls.filter(Boolean));
+    console.info("🚀 ~ handleGenerateCode ~ imageUrls:", imageUrls);
     const content =
       parentContent?.parentContents
         ?.map((content) => content?.content)
         .join("\n") || "";
-    const images =
-      parentContent?.parentContents?.map((content) => content?.image) || [];
-    console.log("🚀 ~ handleGenerateCode ~ images:", images);
-    await generate(content);
+    const prompt =
+      imageUrls.length > 0
+        ? `${content}\n\nReference images:\n${imageUrls.join("\n")}`
+        : content;
+    await generate(prompt);
   };
 
   // Store completion when available
@@ -135,6 +143,7 @@ export const Content = ({ nodeId }: ContentProps) => {
           completion={completion}
           generated={generated}
           streaming={streaming}
+          regenerate={handleGenerateCode}
         />
       ) : image ? (
         <ImageContent
