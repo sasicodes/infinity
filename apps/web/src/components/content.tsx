@@ -104,6 +104,9 @@ export const Content = ({ nodeId }: ContentProps) => {
       parentContent?.parentContents
         ?.map((content) => content?.content)
         .join("\n") || "";
+    const images =
+      parentContent?.parentContents?.map((content) => content?.image) || [];
+    console.log("🚀 ~ handleGenerateCode ~ images:", images);
     await generate(content);
   };
 

@@ -16,6 +16,7 @@ import { CustomEdge } from "./edge";
 import { loadFlowData, saveFlowData } from "../lib/idb";
 import { v4 as uuidv4 } from "uuid";
 import { useSelectAll } from "../lib/hooks/use-select-all";
+import { db } from "../lib/idb";
 
 const nodeTypes = {
   custom: CustomNode
@@ -145,6 +146,25 @@ const Flow = () => {
     [setNodes, screenToFlowPosition]
   );
 
+  const onNodesDelete = useCallback(
+    async (params: Node[]) => {
+      // Delete node content from IndexedDB
+      await Promise.all(params.map((node) => db.nodeContent.delete(node.id)));
+
+      // Update flow data by removing deleted nodes and their connected edges
+      const deletedNodeIds = new Set(params.map((node) => node.id));
+      const updatedNodes = nodes.filter((node) => !deletedNodeIds.has(node.id));
+      const updatedEdges = edges.filter(
+        (edge) =>
+          !deletedNodeIds.has(edge.source) && !deletedNodeIds.has(edge.target)
+      );
+
+      // Save updated flow data
+      await saveFlowData({ nodes: updatedNodes, edges: updatedEdges });
+    },
+    [nodes, edges]
+  );
+
   useSelectAll(setNodes);
 
   return (
@@ -163,6 +183,7 @@ const Flow = () => {
         }))}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onNodesDelete={onNodesDelete}
         onConnect={onConnect}
         onPaneClick={onPaneClick}
         proOptions={{ hideAttribution: true }}
