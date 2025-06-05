@@ -19,11 +19,14 @@ export const ImageContent = ({
   onKeyDown
 }: ImageContentProps) => {
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-36 w-full">
+      <div className="-mt-5 -ml-2 absolute scale-50 cursor-move font-mono text-gray-500 text-xs uppercase">
+        Image
+      </div>
       <img
         src={image}
         alt="Node content"
-        className="h-full w-full rounded-sm object-cover"
+        className="h-full w-full rounded-lg object-cover"
         draggable={false}
         onClick={() => setIsEditing(true)}
         onKeyDown={onKeyDown}

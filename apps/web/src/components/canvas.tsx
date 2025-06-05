@@ -128,6 +128,14 @@ const Flow = () => {
     []
   );
 
+  const isValidConnection = useCallback(
+    (params: Connection | Edge) => {
+      if ("id" in params) return false; // Skip if it's an Edge
+      return validateConnection(params);
+    },
+    [validateConnection]
+  );
+
   const onConnect = useCallback(
     async (params: Connection) => {
       if (!validateConnection(params)) return;
@@ -211,8 +219,12 @@ const Flow = () => {
         onConnect={onConnect}
         onPaneClick={onPaneClick}
         proOptions={{ hideAttribution: true }}
+        isValidConnection={isValidConnection}
         fitView
-        defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+        panOnScroll
+        zoomOnDoubleClick={false}
+        // panOnDrag={false}
+        deleteKeyCode={["Backspace", "Delete"]}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
       >

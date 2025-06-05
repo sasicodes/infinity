@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import { db } from "../../lib/idb";
+import { motion } from "motion/react";
 
 interface TextContentProps {
   nodeId: string;
@@ -48,14 +49,24 @@ export const TextContent = ({
   if (!isEditing) return null;
 
   return (
-    <div className="h-full w-full">
+    <div className="h-36 w-full">
+      <motion.div
+        className="-mt-5 -ml-2 absolute scale-50 cursor-move font-mono text-gray-500 text-xs uppercase"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 10 }}
+        transition={{ duration: 0.2 }}
+      >
+        Text
+      </motion.div>
       <textarea
         ref={textareaRef}
         value={content}
         onChange={handleTextChange}
         onBlur={handleTextBlur}
         onKeyDown={onKeyDown}
-        className="h-[200%] w-[200%] resize-none bg-transparent p-2 text-white text-xs outline-none [transform-origin:top_left] [transform:scale(0.5)]"
+        placeholder="Write something..."
+        className="h-[200%] w-[200%] resize-none bg-transparent p-2 text-black text-sm outline-none [transform-origin:top_left] [transform:scale(0.5)]"
       />
     </div>
   );

@@ -20,11 +20,14 @@ export const GenerateContent = ({
   }
 
   return (
-    <div className="h-full w-full">
+    <div className="relative mx-auto aspect-video w-[500px]">
+      <div className="-mt-5 -ml-3 absolute scale-50 cursor-move font-mono text-gray-500 text-xs uppercase">
+        Generated
+      </div>
       <iframe
         srcDoc={completion || generated}
         title="Generated content"
-        className="pointer-events-none h-full w-full overflow-hidden rounded-sm border-none"
+        className="h-full w-full overflow-hidden rounded-lg border-none"
         sandbox="allow-scripts"
       />
     </div>

@@ -49,7 +49,7 @@ export const EmptyContent = ({
 
   return (
     <div
-      className="flex h-full w-full scale-50 cursor-pointer flex-col items-center justify-center gap-2 transition-opacity duration-200"
+      className="flex h-36 w-full scale-50 flex-col items-center justify-center gap-2 transition-opacity duration-200"
       onKeyDown={onKeyDown}
     >
       <input
@@ -61,7 +61,7 @@ export const EmptyContent = ({
       />
       <button
         type="button"
-        className="flex cursor-pointer items-center gap-1 font-normal text-gray-300 text-xs leading-none hover:text-white"
+        className="flex cursor-pointer items-center gap-1 p-1 font-normal text-neutral-500 text-xs leading-none hover:text-neutral-700"
         onClick={handleUploadClick}
         onKeyDown={onKeyDown}
       >
@@ -71,7 +71,7 @@ export const EmptyContent = ({
       <span className="text-[10px] text-neutral-500">or</span>
       <button
         type="button"
-        className="flex cursor-pointer items-center gap-1 font-normal text-gray-300 text-xs leading-none hover:text-white"
+        className="flex cursor-pointer items-center gap-1 p-1 font-normal text-neutral-500 text-xs leading-none hover:text-neutral-700"
         onClick={() => setIsEditing(true)}
         onKeyDown={onKeyDown}
       >
@@ -91,14 +91,14 @@ export const EmptyContent = ({
             <span className="text-[10px] text-neutral-500">or</span>
             <button
               type="button"
-              className="flex cursor-pointer items-center gap-1 font-normal text-gray-300 text-xs leading-none hover:text-white"
+              className="flex cursor-pointer items-center gap-1 p-1 font-normal text-neutral-500 text-xs leading-none hover:text-neutral-700"
               onClick={onGenerateCode}
               onKeyDown={onKeyDown}
             >
               <Code2 className="size-3" />
               Generate Code
             </button>
-            <div className="mt-1 cursor-default select-none text-[10px] text-neutral-500">
+            <div className="cursor-default select-none text-[10px] text-neutral-400">
               {parentContent.images > 0 && (
                 <span>
                   {parentContent.images} image

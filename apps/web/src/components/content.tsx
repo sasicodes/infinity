@@ -3,10 +3,10 @@ import { db } from "../lib/idb";
 import { useLiveQuery } from "dexie-react-hooks";
 import type { Edge } from "@xyflow/react";
 import { useGenerate } from "../lib/hooks/use-generate";
-import { ImageContent } from "./content/image-content";
-import { TextContent } from "./content/text-content";
-import { EmptyContent } from "./content/empty-content";
-import { GenerateContent } from "./content/generate-content";
+import { ImageContent } from "./contents/image-content";
+import { TextContent } from "./contents/text-content";
+import { EmptyContent } from "./contents/empty-content";
+import { GenerateContent } from "./contents/generate-content";
 import { Loader } from "lucide-react";
 
 interface ContentProps {

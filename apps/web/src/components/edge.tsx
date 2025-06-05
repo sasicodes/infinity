@@ -23,7 +23,8 @@ export const CustomEdge = ({
     <BaseEdge
       path={edgePath}
       style={{
-        stroke: selected ? "#a1a1a1" : "#404040",
+        stroke: selected ? "#404040" : "#d4d4d4",
+        strokeDasharray: "5,5",
         transition: "stroke 0.2s, stroke-width 0.2s"
       }}
     />
