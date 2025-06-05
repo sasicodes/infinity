@@ -11,6 +11,7 @@ export interface NodeContent {
   id: string;
   content?: string;
   image?: string;
+  generated?: string;
 }
 
 class FlowDatabase extends Dexie {

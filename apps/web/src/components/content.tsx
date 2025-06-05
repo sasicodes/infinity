@@ -28,6 +28,7 @@ export const Content = ({ nodeId }: ContentProps) => {
 
   const content = nodeData?.content || "";
   const image = nodeData?.image;
+  const generated = nodeData?.generated;
   const isLoading = nodeData === undefined;
 
   // Get parent nodes and their content
@@ -75,7 +76,8 @@ export const Content = ({ nodeId }: ContentProps) => {
         await db.nodeContent.put({
           id: nodeId,
           content: "",
-          image: undefined
+          image: undefined,
+          generated: undefined
         });
       }
     };
@@ -151,6 +153,18 @@ export const Content = ({ nodeId }: ContentProps) => {
     await generate(content);
   };
 
+  // Store completion when available
+  useEffect(() => {
+    if (completion) {
+      db.nodeContent.put({
+        id: nodeId,
+        content,
+        image,
+        generated: completion
+      });
+    }
+  }, [completion, nodeId, content, image]);
+
   if (isLoading) {
     return null;
   }
@@ -161,12 +175,12 @@ export const Content = ({ nodeId }: ContentProps) => {
         <div className="flex h-full w-full items-center justify-center">
           <Loader className="size-2 animate-spin" />
         </div>
-      ) : completion ? (
+      ) : completion || generated ? (
         <div className="h-full w-full">
           <iframe
-            srcDoc={completion}
+            srcDoc={completion || generated}
             title="Generated content"
-            className="h-full w-full overflow-hidden rounded-sm border-none"
+            className="pointer-events-none h-full w-full overflow-hidden rounded-sm border-none"
             sandbox="allow-scripts"
           />
         </div>
@@ -188,7 +202,8 @@ export const Content = ({ nodeId }: ContentProps) => {
                   await db.nodeContent.put({
                     id: nodeId,
                     content,
-                    image: undefined
+                    image: undefined,
+                    generated: nodeData?.generated
                   });
                   setIsEditing(false);
                 }}
