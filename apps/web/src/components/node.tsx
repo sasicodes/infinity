@@ -11,7 +11,7 @@ export const CustomNode = ({ id, selected }: NodeProps) => {
   return (
     <div
       className={clsx(
-        "min-w-44 rounded-xl bg-white p-1 ring transition-all duration-200 dark:bg-black",
+        "min-w-44 rounded-xl bg-white p-1 ring transition-all duration-200",
         selected ? "ring-neutral-300" : "ring-neutral-200",
         !hasGeneratedContent && "max-w-80"
       )}

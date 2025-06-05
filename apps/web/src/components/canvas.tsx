@@ -13,7 +13,7 @@ import "@xyflow/react/dist/style.css";
 import { useCallback, useRef, useEffect } from "react";
 import { CustomNode } from "./node";
 import { CustomEdge } from "./edge";
-import { loadFlowData, saveFlowData, db } from "../lib/idb";
+import { loadFlowData, saveFlowData } from "../lib/idb";
 import { v4 as uuidv4 } from "uuid";
 import { useSelectAll } from "../lib/hooks/use-select-all";
 
@@ -34,6 +34,7 @@ const Flow = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition } = useReactFlow();
   const saveTimeoutRef = useRef<number | undefined>(undefined);
+  const isInitialLoad = useRef(true);
 
   // Load initial data from IndexedDB
   useEffect(() => {
@@ -43,12 +44,16 @@ const Flow = () => {
         setNodes(data.nodes);
         setEdges(data.edges);
       }
+      isInitialLoad.current = false;
     };
     loadData();
   }, [setNodes, setEdges]);
 
   // Save data to IndexedDB with debouncing
   useEffect(() => {
+    // Don't save if we're still loading initial data or if we have no data
+    if (isInitialLoad.current || (!nodes.length && !edges.length)) return;
+
     if (saveTimeoutRef.current) {
       window.clearTimeout(saveTimeoutRef.current);
     }
@@ -90,42 +95,6 @@ const Flow = () => {
       return true;
     },
     [edges]
-  );
-
-  const getNodeDetails = useCallback(
-    async (nodeId: string) => {
-      const node = nodes.find((n) => n.id === nodeId);
-      const content = await db.nodeContent.get(nodeId);
-
-      return {
-        id: node?.id,
-        data: node?.data,
-        content: content?.content,
-        image: content?.image
-      };
-    },
-    [nodes]
-  );
-
-  const getAllParentNodes = useCallback(
-    (nodeId: string, edges: Edge[]): string[] => {
-      const parentNodes = new Set<string>();
-
-      const traverse = (currentId: string) => {
-        const parentEdges = edges.filter((edge) => edge.target === currentId);
-        for (const edge of parentEdges) {
-          const parentId = edge.source;
-          if (!parentNodes.has(parentId)) {
-            parentNodes.add(parentId);
-            traverse(parentId);
-          }
-        }
-      };
-
-      traverse(nodeId);
-      return Array.from(parentNodes);
-    },
-    []
   );
 
   const isValidConnection = useCallback(

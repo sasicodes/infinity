@@ -7,7 +7,7 @@ import { ImageContent } from "./contents/image-content";
 import { TextContent } from "./contents/text-content";
 import { EmptyContent } from "./contents/empty-content";
 import { GenerateContent } from "./contents/generate-content";
-import { Loader } from "lucide-react";
+import { Loader } from "./loader";
 
 interface ContentProps {
   nodeId: string;
@@ -120,15 +120,13 @@ export const Content = ({ nodeId }: ContentProps) => {
   }, [completion, nodeId, content, image]);
 
   if (isLoading) {
-    return null;
+    return <Loader />;
   }
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center transition-opacity duration-200">
       {streaming ? (
-        <div className="flex h-36 w-full items-center justify-center">
-          <Loader className="size-2 animate-spin" />
-        </div>
+        <Loader />
       ) : completion || generated ? (
         <GenerateContent
           completion={completion}

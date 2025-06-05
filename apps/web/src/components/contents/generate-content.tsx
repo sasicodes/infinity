@@ -1,4 +1,4 @@
-import { Loader } from "lucide-react";
+import { Loader } from "../loader";
 
 interface GenerateContentProps {
   completion?: string;
@@ -28,11 +28,7 @@ export const GenerateContent = ({
   streaming
 }: GenerateContentProps) => {
   if (streaming) {
-    return (
-      <div className="flex h-36 w-full items-center justify-center">
-        <Loader className="size-2 animate-spin" />
-      </div>
-    );
+    return <Loader />;
   }
 
   const content = completion || generated || "";
