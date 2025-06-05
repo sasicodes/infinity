@@ -126,7 +126,7 @@ export const Content = ({ nodeId }: ContentProps) => {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center transition-opacity duration-200">
       {streaming ? (
-        <div className="flex h-full w-full items-center justify-center">
+        <div className="flex h-36 w-full items-center justify-center">
           <Loader className="size-2 animate-spin" />
         </div>
       ) : completion || generated ? (
