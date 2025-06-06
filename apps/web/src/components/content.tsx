@@ -104,9 +104,8 @@ export const Content = ({ nodeId }: ContentProps) => {
     const images =
       parentContent?.parentContents?.map((content) => content?.image) || [];
     const imageUrls = await Promise.all(
-      images.map((image) => uploadImage(image as File))
-    ).then((urls) => urls.filter(Boolean));
-    console.info("🚀 ~ handleGenerateCode ~ imageUrls:", imageUrls);
+      images.filter(Boolean).map((image) => uploadImage(image as File))
+    );
     const content =
       parentContent?.parentContents
         ?.map((content) => content?.content)
