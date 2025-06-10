@@ -1,5 +1,5 @@
 import { Trash2 } from "lucide-react";
-import { db } from "../../lib/idb";
+import { db } from "../../../lib/idb";
 
 interface ImageContentProps {
   nodeId: string;

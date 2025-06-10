@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm -r --parallel run dev"
+    "dev": "pnpm -r --parallel run dev",
+    "biome:fix": "biome check --write"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4"

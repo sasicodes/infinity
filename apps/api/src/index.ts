@@ -1,11 +1,11 @@
 import "dotenv/config";
 import { serve } from "@hono/node-server";
+import { streamText } from "ai";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { stream } from "hono/streaming";
 import { codeModel } from "./model";
-import { streamText } from "ai";
 import { systemPrompt } from "./prompt";
-import { cors } from "hono/cors";
 
 const app = new Hono();
 

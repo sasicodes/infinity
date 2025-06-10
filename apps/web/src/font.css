@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "Infinity Sans";
+  src: url("./assets/fonts/sans-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Infinity Sans";
+  src: url("./assets/fonts/sans-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Infinity Sans";
+  src: url("./assets/fonts/sans-semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Infinity Sans";
+  src: url("./assets/fonts/sans-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}

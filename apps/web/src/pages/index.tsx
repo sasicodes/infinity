@@ -1,6 +1,11 @@
-import "@xyflow/react/dist/style.css";
-import { Canvas } from "../components/canvas";
+import { Feed } from "../components/home/feed";
+import { Header } from "../components/layout/header";
 
 export const Home = () => {
-  return <Canvas />;
+  return (
+    <div className="mx-auto min-h-screen min-w-2xl border-neutral-200 border-x">
+      <Header />
+      <Feed />
+    </div>
+  );
 };

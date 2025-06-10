@@ -1,5 +1,5 @@
+import type { Edge, Node } from "@xyflow/react";
 import Dexie, { type Table } from "dexie";
-import type { Node, Edge } from "@xyflow/react";
 
 export interface FlowData {
   id?: number;

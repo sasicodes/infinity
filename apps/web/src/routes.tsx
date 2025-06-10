@@ -1,29 +1,18 @@
-import { createBrowserRouter, Outlet } from "react-router";
+import { Navigate, Outlet, createBrowserRouter } from "react-router";
 import { Home } from "./pages";
-import { MousePointerClick } from "lucide-react";
-import { ReactFlowProvider } from "@xyflow/react";
-import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "./lib/idb";
+import { Imagine } from "./pages/imagine";
 
 const Layout = () => {
-  const data = useLiveQuery(() => db.flowData.orderBy("id").last());
-  const isLoading = data === undefined;
-  const isStarted = data?.nodes && data.nodes.length > 0;
+  const isAuthenticated = true;
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
 
   return (
-    <ReactFlowProvider>
-      <div className="flex h-screen w-screen cursor-pointer">
-        {!isLoading && !isStarted ? (
-          <div className="absolute inset-0">
-            <div className="flex h-full w-full flex-col items-center justify-center gap-4">
-              <MousePointerClick className="size-10" strokeWidth={1.5} />
-              <span>Double click anywhere to start</span>
-            </div>
-          </div>
-        ) : null}
-        <Outlet />
-      </div>
-    </ReactFlowProvider>
+    <div className="flex h-screen w-screen">
+      <Outlet />
+    </div>
   );
 };
 
@@ -34,6 +23,10 @@ export const router = createBrowserRouter([
       {
         path: "/",
         Component: Home
+      },
+      {
+        path: "/imagine",
+        Component: Imagine
       }
     ]
   }

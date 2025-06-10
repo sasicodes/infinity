@@ -3,7 +3,14 @@
   "organizeImports": { "enabled": true },
   "files": {
     "maxSize": 5242880,
-    "ignore": ["**/node_modules/**"]
+    "ignore": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/tsconfig.json",
+      "**/tsconfig.node.json",
+      "**/tsconfig.app.json"
+    ]
   },
   "linter": {
     "enabled": true,

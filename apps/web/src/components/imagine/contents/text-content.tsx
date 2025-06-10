@@ -1,6 +1,6 @@
-import { useRef, useEffect } from "react";
-import { db } from "../../lib/idb";
 import { motion } from "motion/react";
+import { useEffect, useRef } from "react";
+import { db } from "../../../lib/idb";
 
 interface TextContentProps {
   nodeId: string;
@@ -36,7 +36,7 @@ export const TextContent = ({
     await db.nodeContent.put({
       id: nodeId,
       content: e.target.value,
-      image
+      image: image ? new Blob([image]) : undefined
     });
   };
 
@@ -66,7 +66,7 @@ export const TextContent = ({
         onBlur={handleTextBlur}
         onKeyDown={onKeyDown}
         placeholder="Write something..."
-        className="h-[200%] w-[200%] resize-none bg-transparent p-2 text-black text-sm outline-none [scrollbar-width:thin] [transform-origin:top_left] [transform:scale(0.5)]"
+        className="h-[200%] w-[200%] cursor-default resize-none bg-transparent p-2 text-black text-sm outline-none [scrollbar-width:thin] [transform-origin:top_left] [transform:scale(0.5)]"
       />
     </div>
   );

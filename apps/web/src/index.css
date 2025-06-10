@@ -1,7 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Infinity Sans", system-ui, sans-serif;
+}
+
 body {
-  @apply bg-[#f5f5f5] text-black text-sm min-h-screen;
+  @apply bg-[#f5f5f5] text-black text-sm min-h-screen font-sans;
 }
 
 @theme {

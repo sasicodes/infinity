@@ -1,8 +1,8 @@
-import { Handle, Position, type NodeProps } from "@xyflow/react";
+import { Handle, type NodeProps, Position } from "@xyflow/react";
 import clsx from "clsx";
-import { Content } from "./content";
-import { db } from "../lib/idb";
 import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "../../lib/idb";
+import { Content } from "./content";
 
 export const CustomNode = ({ id, selected }: NodeProps) => {
   const nodeData = useLiveQuery(() => db.nodeContent.get(id), [id]);
@@ -12,7 +12,7 @@ export const CustomNode = ({ id, selected }: NodeProps) => {
     <div
       className={clsx(
         "min-w-44 rounded-xl bg-white p-1 ring transition-all duration-200",
-        selected ? "ring-neutral-300" : "ring-neutral-200",
+        selected ? "ring-neutral-400" : "ring-neutral-200",
         !hasGeneratedContent && "max-w-80"
       )}
     >

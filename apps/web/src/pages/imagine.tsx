@@ -1,21 +1,24 @@
 import {
   Background,
-  ReactFlow,
   BackgroundVariant,
-  useNodesState,
-  useEdgesState,
   type Connection,
-  type Node,
   type Edge,
+  type Node,
+  ReactFlow,
+  ReactFlowProvider,
+  useEdgesState,
+  useNodesState,
   useReactFlow
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback, useRef, useEffect } from "react";
-import { CustomNode } from "./node";
-import { CustomEdge } from "./edge";
-import { loadFlowData, saveFlowData } from "../lib/idb";
+import { useLiveQuery } from "dexie-react-hooks";
+import { MousePointerClick } from "lucide-react";
+import { useCallback, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { CustomEdge } from "../components/imagine/edge";
+import { CustomNode } from "../components/imagine/node";
 import { useSelectAll } from "../lib/hooks/use-select-all";
+import { loadFlowData, saveFlowData } from "../lib/idb";
 import { db } from "../lib/idb";
 
 const nodeTypes = {
@@ -201,6 +204,24 @@ const Flow = () => {
   );
 };
 
-export const Canvas = () => {
-  return <Flow />;
+export const Imagine = () => {
+  const data = useLiveQuery(() => db.flowData.orderBy("id").last());
+  const isLoading = data === undefined;
+  const isStarted = data?.nodes && data.nodes.length > 0;
+
+  return (
+    <ReactFlowProvider>
+      <div className="flex cursor-pointer">
+        {!isLoading && !isStarted ? (
+          <div className="absolute inset-0">
+            <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+              <MousePointerClick className="size-10" strokeWidth={1.5} />
+              <span>Double click anywhere to start</span>
+            </div>
+          </div>
+        ) : null}
+        <Flow />
+      </div>
+    </ReactFlowProvider>
+  );
 };

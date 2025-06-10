@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
-import { db } from "../lib/idb";
-import { useLiveQuery } from "dexie-react-hooks";
 import type { Edge } from "@xyflow/react";
-import { useGenerate } from "../lib/hooks/use-generate";
-import { ImageContent } from "./contents/image-content";
-import { TextContent } from "./contents/text-content";
+import { useLiveQuery } from "dexie-react-hooks";
+import { useEffect, useState } from "react";
+import { useGenerate } from "../../lib/hooks/use-generate";
+import { db } from "../../lib/idb";
+import { uploadImage } from "../../lib/upload";
 import { EmptyContent } from "./contents/empty-content";
 import { GenerateContent } from "./contents/generate-content";
+import { ImageContent } from "./contents/image-content";
+import { TextContent } from "./contents/text-content";
 import { Loader } from "./loader";
-import { uploadImage } from "../lib/upload";
 
 interface ContentProps {
   nodeId: string;

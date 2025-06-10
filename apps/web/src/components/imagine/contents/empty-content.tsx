@@ -1,7 +1,7 @@
-import { Image, Type, Code2 } from "lucide-react";
+import { Code2, Image, Type } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { db } from "../../lib/idb";
 import { useRef } from "react";
+import { db } from "../../../lib/idb";
 
 interface EmptyContentProps {
   nodeId: string;
