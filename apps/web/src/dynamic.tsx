@@ -25,7 +25,10 @@ const DynamicWagmiProvider = ({ children }: { children: React.ReactNode }) => {
         walletConnectors: [
           ZeroDevSmartWalletConnectors,
           EthereumWalletConnectors
-        ]
+        ],
+        social: {
+          strategy: "popup"
+        }
       }}
     >
       <WagmiProvider config={config}>
