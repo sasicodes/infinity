@@ -19,7 +19,7 @@ export const UserMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-44" sideOffset={10}>
         <DropdownMenuItem onClick={() => navigate(`/u/${user?.username}`)}>
-          {user?.username}
+          Profile
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleLogOut()}>
           Sign out

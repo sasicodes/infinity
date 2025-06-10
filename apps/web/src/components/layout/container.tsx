@@ -1,10 +1,20 @@
+import { Outlet, useLocation } from "react-router";
+import { tw } from "../ui/tw";
 import { Header } from "./header";
 
-export const Container = ({ children }: { children: React.ReactNode }) => {
+export const Container = () => {
+  const location = useLocation();
+  const isCanvasPage = location.pathname.includes("/imagine");
+
   return (
-    <div className="mx-auto flex min-h-screen w-[700px] flex-col border-neutral-200 border-x">
+    <div
+      className={tw(
+        "mx-auto flex min-h-screen flex-col border-neutral-200 border-x",
+        isCanvasPage ? "w-full" : "w-[700px]"
+      )}
+    >
       <Header />
-      {children}
+      <Outlet />
     </div>
   );
 };

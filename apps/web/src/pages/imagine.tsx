@@ -171,7 +171,7 @@ const Flow = () => {
   useSelectAll(setNodes);
 
   return (
-    <div className="h-screen w-screen" ref={reactFlowWrapper}>
+    <div className="h-[calc(100vh-15rem)] w-screen" ref={reactFlowWrapper}>
       <ReactFlow
         nodes={nodes.map((node) => ({
           ...node,

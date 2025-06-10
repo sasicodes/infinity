@@ -1,10 +1,5 @@
 import { Feed } from "../components/home/feed";
-import { Container } from "../components/layout/container";
 
 export const Home = () => {
-  return (
-    <Container>
-      <Feed />
-    </Container>
-  );
+  return <Feed />;
 };
