@@ -1,15 +1,14 @@
-import { Loader } from "lucide-react";
 import { Item } from "./item";
 
 export const Feed = () => {
   const posts = [
     {
-      id: 1,
+      id: "1",
       title: "Post 1",
       content: "This is the content of post 1"
     },
     {
-      id: 2,
+      id: "2",
       title: "Post 2",
       content: "This is the content of post 2"
     }
@@ -20,9 +19,9 @@ export const Feed = () => {
       {posts.map((post) => (
         <Item key={post.id} post={post} />
       ))}
-      <div className="flex items-center justify-center py-6">
+      {/* <div className="flex items-center justify-center py-6">
         <Loader className="size-4 animate-spin" />
-      </div>
+      </div> */}
     </div>
   );
 };
