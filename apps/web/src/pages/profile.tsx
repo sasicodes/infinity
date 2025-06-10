@@ -1,10 +1,9 @@
-import { Feed } from "../components/home/feed";
 import { Container } from "../components/layout/container";
 
-export const Home = () => {
+export const Profile = () => {
   return (
     <Container>
-      <Feed />
+      <div>Profile</div>
     </Container>
   );
 };

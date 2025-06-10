@@ -1,6 +1,7 @@
 import { Navigate, Outlet, createBrowserRouter } from "react-router";
 import { Home } from "./pages";
 import { Imagine } from "./pages/imagine";
+import { Profile } from "./pages/profile";
 
 const Layout = () => {
   const isAuthenticated = true;
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
       {
         path: "/imagine",
         Component: Imagine
+      },
+      {
+        path: "/u/:username",
+        Component: Profile
       }
     ]
   }
