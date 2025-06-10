@@ -4,6 +4,10 @@
   --font-sans: "Infinity Sans", system-ui, sans-serif;
 }
 
+html {
+  @apply overflow-y-scroll;
+}
+
 body {
   @apply bg-[#f5f5f5] text-black text-sm min-h-screen font-sans;
 }

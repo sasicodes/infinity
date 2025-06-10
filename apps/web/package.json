@@ -11,6 +11,10 @@
   },
   "dependencies": {
     "@ai-sdk/react": "^1.2.12",
+    "@dynamic-labs/ethereum": "^4.20.1",
+    "@dynamic-labs/ethereum-aa": "^4.20.1",
+    "@dynamic-labs/sdk-react-core": "^4.20.1",
+    "@dynamic-labs/wagmi-connector": "^4.20.1",
     "@tailwindcss/vite": "^4.1.8",
     "@tanstack/react-query": "^5.80.6",
     "@xyflow/react": "^12.6.4",
@@ -20,7 +24,6 @@
     "dexie-react-hooks": "^1.1.7",
     "lucide-react": "^0.513.0",
     "motion": "^12.16.0",
-    "porto": "^0.0.29",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.6.1",
