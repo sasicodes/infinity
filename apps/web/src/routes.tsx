@@ -10,7 +10,7 @@ const Layout = () => {
   }
 
   return (
-    <div className="flex h-screen w-screen">
+    <div className="flex min-h-screen">
       <Outlet />
     </div>
   );

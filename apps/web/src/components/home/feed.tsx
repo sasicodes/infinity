@@ -11,6 +11,11 @@ export const Feed = () => {
       id: "2",
       title: "Post 2",
       content: "This is the content of post 2"
+    },
+    {
+      id: "3",
+      title: "Post 3",
+      content: "This is the content of post 3"
     }
   ];
 
