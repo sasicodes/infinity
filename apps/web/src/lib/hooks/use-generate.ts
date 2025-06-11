@@ -5,6 +5,7 @@ interface UseGenerateReturn {
   completion: string;
   generate: (prompt: string) => Promise<void>;
   streaming: boolean;
+  setStreaming: (streaming: boolean) => void;
 }
 
 function unescapeJSON(str: string) {
@@ -85,6 +86,7 @@ export function useGenerate(): UseGenerateReturn {
   return {
     completion,
     generate,
-    streaming
+    streaming,
+    setStreaming
   };
 }

@@ -15,7 +15,7 @@ interface ContentProps {
 }
 
 export const Content = ({ nodeId }: ContentProps) => {
-  const { completion, generate, streaming } = useGenerate();
+  const { completion, generate, streaming, setStreaming } = useGenerate();
   const [isEditing, setIsEditing] = useState(false);
 
   // Use live query to read from IndexedDB
@@ -101,6 +101,7 @@ export const Content = ({ nodeId }: ContentProps) => {
   };
 
   const handleGenerateCode = async () => {
+    setStreaming(true);
     const images =
       parentContent?.parentContents?.map((content) => content?.image) || [];
     const imageUrls = await Promise.all(
