@@ -3,7 +3,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
 import { useGenerate } from "../../lib/hooks/use-generate";
 import { db, loadNodeContent, saveNodeContent } from "../../lib/idb";
-import { uploadImage } from "../../lib/upload";
+import { uploadToR2 } from "../../lib/upload";
 import { EmptyContent } from "./contents/empty-content";
 import { GenerateContent } from "./contents/generate-content";
 import { ImageContent } from "./contents/image-content";
@@ -104,7 +104,7 @@ export const Content = ({ nodeId }: ContentProps) => {
     const images =
       parentContent?.parentContents?.map((content) => content?.image) || [];
     const imageUrls = await Promise.all(
-      images.filter(Boolean).map((image) => uploadImage(image as File))
+      images.filter(Boolean).map((image) => uploadToR2(image as File))
     );
     const content =
       parentContent?.parentContents

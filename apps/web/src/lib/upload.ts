@@ -1,10 +1,19 @@
-export const uploadImage = async (image: File) => {
-  const formData = new FormData();
-  formData.append("file", image);
-  const response = await fetch("https://<API>/new", {
-    method: "POST",
-    body: formData
-  });
-  const data = await response.json();
-  return data[0].gateway_url as string;
+import { API_URL } from "./constants";
+
+export const uploadToR2 = async (file: File): Promise<string> => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const data = await fetch(`${API_URL}/upload`, {
+      method: "POST",
+      body: formData
+    });
+    const responseData = await data.json();
+
+    return responseData.url;
+  } catch (error) {
+    console.error("[Error Media Upload]", error);
+    return "";
+  }
 };

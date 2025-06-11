@@ -41,7 +41,7 @@ export async function loadFlowData(): Promise<FlowData | undefined> {
 }
 
 export async function saveNodeContent(data: NodeContent): Promise<void> {
-  await db.nodeContent.add(data);
+  await db.nodeContent.put(data);
 }
 
 export async function loadNodeContent(

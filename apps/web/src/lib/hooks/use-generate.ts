@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../constants";
 
 interface UseGenerateReturn {
   completion: string;
@@ -24,7 +25,7 @@ export function useGenerate(): UseGenerateReturn {
     setCompletion("");
 
     try {
-      const response = await fetch("http://localhost:3000/generate", {
+      const response = await fetch(`${API_URL}/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -6,6 +6,7 @@ import { cors } from "hono/cors";
 import { stream } from "hono/streaming";
 import { codeModel } from "./model";
 import { systemPrompt } from "./prompt";
+import { upload } from "./services/upload";
 
 const app = new Hono();
 
@@ -24,6 +25,8 @@ app.post("/generate", async (c) => {
 
   return stream(c, (stream) => stream.pipe(result.toDataStream()));
 });
+
+app.post("/upload", upload);
 
 serve(
   {
