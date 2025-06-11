@@ -15,7 +15,7 @@ export const UserMenu = () => {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger>
-        <Avatar id={user?.userId ?? ""} />
+        <Avatar id={user?.userId ?? ""} className="size-7" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-44" sideOffset={10}>
         <DropdownMenuItem onClick={() => navigate(`/u/${user?.username}`)}>

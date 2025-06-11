@@ -46,7 +46,7 @@ export const Sidebar = () => {
             <HomeIcon
               className={tw(
                 "relative size-4",
-                !isHomePage && "text-neutral-400"
+                isHomePage ? "text-neutral-500" : "text-neutral-400"
               )}
             />
           </Link>
@@ -72,7 +72,7 @@ export const Sidebar = () => {
             <SparklesIcon
               className={tw(
                 "relative size-4",
-                !isExplorePage && "text-neutral-400"
+                isExplorePage ? "text-neutral-500" : "text-neutral-400"
               )}
             />
           </Link>
