@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { useEffect, useRef } from "react";
-import { db } from "../../../lib/idb";
+import { saveNodeContent } from "../../../lib/idb";
 
 interface TextContentProps {
   nodeId: string;
@@ -33,7 +33,7 @@ export const TextContent = ({
   const handleTextChange = async (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    await db.nodeContent.put({
+    await saveNodeContent({
       id: nodeId,
       content: e.target.value,
       image: image ? new Blob([image]) : undefined

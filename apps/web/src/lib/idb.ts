@@ -39,3 +39,13 @@ export async function saveFlowData(data: Omit<FlowData, "id">): Promise<void> {
 export async function loadFlowData(): Promise<FlowData | undefined> {
   return db.flowData.orderBy("id").last();
 }
+
+export async function saveNodeContent(data: NodeContent): Promise<void> {
+  await db.nodeContent.add(data);
+}
+
+export async function loadNodeContent(
+  id: string
+): Promise<NodeContent | undefined> {
+  return db.nodeContent.get(id);
+}

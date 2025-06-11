@@ -1,5 +1,5 @@
 import { Trash2 } from "lucide-react";
-import { db } from "../../../lib/idb";
+import { saveNodeContent } from "../../../lib/idb";
 
 interface ImageContentProps {
   nodeId: string;
@@ -36,7 +36,7 @@ export const ImageContent = ({
           <button
             type="button"
             onClick={async () => {
-              await db.nodeContent.put({
+              await saveNodeContent({
                 id: nodeId,
                 content,
                 image: undefined

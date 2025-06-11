@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import { Container } from "./components/layout/container";
 import { Home } from "./pages";
+import { Explore } from "./pages/explore";
 import { Imagine } from "./pages/imagine";
 import { Profile } from "./pages/profile";
 
@@ -15,6 +16,10 @@ export const router = createBrowserRouter([
       {
         path: "/",
         Component: Home
+      },
+      {
+        path: "/explore",
+        Component: Explore
       },
       {
         path: "/u/:username",

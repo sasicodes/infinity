@@ -2,7 +2,7 @@ import type { Edge } from "@xyflow/react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
 import { useGenerate } from "../../lib/hooks/use-generate";
-import { db } from "../../lib/idb";
+import { db, loadNodeContent, saveNodeContent } from "../../lib/idb";
 import { uploadImage } from "../../lib/upload";
 import { EmptyContent } from "./contents/empty-content";
 import { GenerateContent } from "./contents/generate-content";
@@ -58,7 +58,7 @@ export const Content = ({ nodeId }: ContentProps) => {
     if (parentIds.length === 0) return { images: 0, texts: 0 };
 
     const parentContents = await Promise.all(
-      parentIds.map((id) => db.nodeContent.get(id))
+      parentIds.map((id) => loadNodeContent(id))
     );
 
     const images = parentContents.filter((content) => content?.image).length;
@@ -72,9 +72,9 @@ export const Content = ({ nodeId }: ContentProps) => {
   // Initialize new node in IndexedDB
   useEffect(() => {
     const initNode = async () => {
-      const exists = await db.nodeContent.get(nodeId);
+      const exists = await loadNodeContent(nodeId);
       if (!exists) {
-        await db.nodeContent.put({
+        await saveNodeContent({
           id: nodeId,
           content: "",
           image: undefined,
@@ -120,7 +120,7 @@ export const Content = ({ nodeId }: ContentProps) => {
   // Store completion when available
   useEffect(() => {
     if (completion) {
-      db.nodeContent.put({
+      saveNodeContent({
         id: nodeId,
         content,
         image,

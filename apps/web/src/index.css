@@ -12,6 +12,10 @@ body {
   @apply bg-[#f5f5f5] text-black text-sm min-h-screen font-sans;
 }
 
+button {
+  @apply cursor-pointer;
+}
+
 @theme {
   --shadow-overlay: 0px 2px 14px 0px rgba(0, 0, 0, 0.2);
 }

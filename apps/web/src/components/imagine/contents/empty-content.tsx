@@ -1,7 +1,7 @@
 import { Code2, Image, Type } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useRef } from "react";
-import { db } from "../../../lib/idb";
+import { saveNodeContent } from "../../../lib/idb";
 
 interface EmptyContentProps {
   nodeId: string;
@@ -38,7 +38,7 @@ export const EmptyContent = ({
     const reader = new FileReader();
     reader.onload = async (event) => {
       const result = event.target?.result as ArrayBuffer;
-      await db.nodeContent.put({
+      await saveNodeContent({
         id: nodeId,
         content,
         image: new Blob([result], { type: file.type })
