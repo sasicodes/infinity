@@ -27,25 +27,53 @@ export const Sidebar = () => {
           <Link
             to="/"
             className={tw(
-              "flex size-9 items-center justify-center rounded-full",
+              "relative flex size-9 items-center justify-center rounded-full",
               isHomePage && "bg-[#f5f5f5] shadow-inner"
             )}
           >
+            {isHomePage ? (
+              <motion.span
+                key="home-indicator"
+                layoutId="page-switcher"
+                transition={{
+                  type: "spring",
+                  duration: 0.2,
+                  bounce: 0
+                }}
+                className="absolute inset-0 rounded-full bg-[#f5f5f5]"
+              />
+            ) : null}
             <HomeIcon
-              className={tw("size-4", !isHomePage && "text-neutral-500")}
-              strokeWidth={1.5}
+              className={tw(
+                "relative size-4",
+                !isHomePage && "text-neutral-400"
+              )}
             />
           </Link>
           <Link
             to="/explore"
             className={tw(
-              "flex size-9 items-center justify-center rounded-full",
+              "relative flex size-9 items-center justify-center rounded-full",
               isExplorePage && "bg-[#f5f5f5] shadow-inner"
             )}
           >
+            {isExplorePage ? (
+              <motion.span
+                key="explore-indicator"
+                layoutId="page-switcher"
+                transition={{
+                  type: "spring",
+                  duration: 0.2,
+                  bounce: 0
+                }}
+                className="absolute inset-0 rounded-full bg-[#f5f5f5]"
+              />
+            ) : null}
             <SparklesIcon
-              className={tw("size-4", !isExplorePage && "text-neutral-500")}
-              strokeWidth={1.5}
+              className={tw(
+                "relative size-4",
+                !isExplorePage && "text-neutral-400"
+              )}
             />
           </Link>
         </div>
