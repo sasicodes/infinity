@@ -16,6 +16,10 @@ button {
   @apply cursor-pointer;
 }
 
+::-webkit-scrollbar {
+  color-scheme: light;
+}
+
 @theme {
   --shadow-overlay: 0px 2px 14px 0px rgba(0, 0, 0, 0.2);
 
