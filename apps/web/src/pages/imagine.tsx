@@ -153,7 +153,6 @@ const Flow = () => {
 
   const onNodesDelete = useCallback(
     async (params: Node[]) => {
-      console.log("🚀 ~ onNodesDelete ~ params:", params);
       // Delete node content from IndexedDB
       await Promise.all(params.map((node) => deleteNodeContent(node.id)));
 
