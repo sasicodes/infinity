@@ -2,22 +2,33 @@
   "name": "api",
   "type": "module",
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "db:g": "prisma generate",
+    "db:m": "prisma migrate dev",
+    "db:s": "prisma studio"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.826.0",
     "@aws-sdk/lib-storage": "^3.826.0",
     "@hono/node-server": "^1.14.3",
+    "@hono/zod-validator": "^0.7.0",
     "@openrouter/ai-sdk-provider": "^0.7.0",
+    "@prisma/client": "6.9.0",
     "ai": "^4.3.16",
     "dotenv": "^16.5.0",
     "hono": "^4.7.11",
-    "uuid": "^11.1.0"
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.2.0",
+    "uuid": "^11.1.0",
+    "zod": "^3.25.63"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20.11.17",
+    "prisma": "^6.9.0",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   }

@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id String @id @default(uuid())
+
+  html     String?
+  content  String?
+  mediaUrl String?
+
+  ipId   String
+  userId String
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+}
+
+model Flow {
+  id String @id @default(uuid())
+
+  nodes  String // JSON stringified Node[]
+  edges  String // JSON stringified Edge[]
+  userId String
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+
+  @@index([userId])
+}
+
+model Node {
+  id String @id @default(uuid())
+
+  userId    String
+  nodeId    String
+  content   String?
+  imageUrl  String?
+  generated String?
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+}

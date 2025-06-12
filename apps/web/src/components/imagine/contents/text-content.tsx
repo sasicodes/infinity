@@ -5,7 +5,7 @@ import { saveNodeContent } from "../../../lib/idb";
 interface TextContentProps {
   nodeId: string;
   content: string;
-  image: string | undefined;
+  imageUrl: string | undefined;
   isEditing: boolean;
   setIsEditing: (editing: boolean) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
@@ -14,7 +14,7 @@ interface TextContentProps {
 export const TextContent = ({
   nodeId,
   content,
-  image,
+  imageUrl,
   isEditing,
   setIsEditing,
   onKeyDown
@@ -36,7 +36,7 @@ export const TextContent = ({
     await saveNodeContent({
       id: nodeId,
       content: e.target.value,
-      image: image ? new Blob([image]) : undefined
+      imageUrl
     });
   };
 

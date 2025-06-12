@@ -3,7 +3,6 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
 import { useGenerate } from "../../lib/hooks/use-generate";
 import { db, loadNodeContent, saveNodeContent } from "../../lib/idb";
-import { uploadToR2 } from "../../lib/upload";
 import { EmptyContent } from "./contents/empty-content";
 import { GenerateContent } from "./contents/generate-content";
 import { ImageContent } from "./contents/image-content";
@@ -28,7 +27,7 @@ export const Content = ({ nodeId }: ContentProps) => {
   );
 
   const content = nodeData?.content || "";
-  const image = nodeData?.image;
+  const imageUrl = nodeData?.imageUrl;
   const generated = nodeData?.generated;
   const isLoading = nodeData === undefined;
 
@@ -61,7 +60,7 @@ export const Content = ({ nodeId }: ContentProps) => {
       parentIds.map((id) => loadNodeContent(id))
     );
 
-    const images = parentContents.filter((content) => content?.image).length;
+    const images = parentContents.filter((content) => content?.imageUrl).length;
     const texts = parentContents.filter((content) =>
       content?.content?.trim()
     ).length;
@@ -77,7 +76,7 @@ export const Content = ({ nodeId }: ContentProps) => {
         await saveNodeContent({
           id: nodeId,
           content: "",
-          image: undefined,
+          imageUrl: undefined,
           generated: undefined
         });
       }
@@ -102,11 +101,9 @@ export const Content = ({ nodeId }: ContentProps) => {
 
   const handleGenerateCode = async () => {
     setStreaming(true);
-    const images =
-      parentContent?.parentContents?.map((content) => content?.image) || [];
-    const imageUrls = await Promise.all(
-      images.filter(Boolean).map((image) => uploadToR2(image as File))
-    );
+    const imageUrls =
+      parentContent?.parentContents?.map((content) => content?.imageUrl) || [];
+
     const content =
       parentContent?.parentContents
         ?.map((content) => content?.content)
@@ -124,11 +121,11 @@ export const Content = ({ nodeId }: ContentProps) => {
       saveNodeContent({
         id: nodeId,
         content,
-        image,
+        imageUrl,
         generated: completion
       });
     }
-  }, [completion, nodeId, content, image]);
+  }, [completion, nodeId, content, imageUrl]);
 
   if (isLoading) {
     return <Loader />;
@@ -145,10 +142,10 @@ export const Content = ({ nodeId }: ContentProps) => {
           streaming={streaming}
           regenerate={handleGenerateCode}
         />
-      ) : image ? (
+      ) : imageUrl ? (
         <ImageContent
           nodeId={nodeId}
-          image={image}
+          imageUrl={imageUrl}
           content={content}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
@@ -158,7 +155,7 @@ export const Content = ({ nodeId }: ContentProps) => {
         <TextContent
           nodeId={nodeId}
           content={content}
-          image={image}
+          imageUrl={imageUrl}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
           onKeyDown={handleKeyDown}

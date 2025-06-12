@@ -9,7 +9,10 @@
       "**/build/**",
       "**/tsconfig.json",
       "**/tsconfig.node.json",
-      "**/tsconfig.app.json"
+      "**/tsconfig.app.json",
+      "**/generated/**",
+      "**/prisma/**",
+      "**/migrations/**"
     ]
   },
   "linter": {

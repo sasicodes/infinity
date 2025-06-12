@@ -1,11 +1,17 @@
-import { Outlet, useLocation } from "react-router";
+import { getAuthToken } from "@dynamic-labs/sdk-react-core";
+import { Navigate, Outlet, useLocation } from "react-router";
 import { tw } from "../ui/tw";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 
 export const Container = () => {
+  const token = getAuthToken();
   const location = useLocation();
   const isCanvasPage = location.pathname.includes("/imagine");
+
+  if (!token) {
+    return <Navigate to="/sign-in" />;
+  }
 
   return (
     <div

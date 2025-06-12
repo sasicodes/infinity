@@ -3,7 +3,7 @@ import { saveNodeContent } from "../../../lib/idb";
 
 interface ImageContentProps {
   nodeId: string;
-  image: string | Blob;
+  imageUrl: string;
   content: string;
   isEditing: boolean;
   setIsEditing: (editing: boolean) => void;
@@ -12,7 +12,7 @@ interface ImageContentProps {
 
 export const ImageContent = ({
   nodeId,
-  image,
+  imageUrl,
   content,
   isEditing,
   setIsEditing,
@@ -24,7 +24,7 @@ export const ImageContent = ({
         Image
       </div>
       <img
-        src={image instanceof Blob ? URL.createObjectURL(image) : image}
+        src={imageUrl}
         alt="Node content"
         className="h-full w-full rounded-lg object-cover"
         draggable={false}
@@ -32,14 +32,18 @@ export const ImageContent = ({
         onKeyDown={onKeyDown}
       />
       {isEditing && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+        <div
+          className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50"
+          onKeyDown={() => setIsEditing(false)}
+          onClick={() => setIsEditing(false)}
+        >
           <button
             type="button"
             onClick={async () => {
               await saveNodeContent({
                 id: nodeId,
                 content,
-                image: undefined
+                imageUrl: undefined
               });
               setIsEditing(false);
             }}

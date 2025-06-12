@@ -4,6 +4,7 @@ import { Home } from "./pages";
 import { Explore } from "./pages/explore";
 import { Imagine } from "./pages/imagine";
 import { Profile } from "./pages/profile";
+import { SignIn } from "./pages/sign-in";
 
 export const router = createBrowserRouter([
   {
@@ -26,5 +27,9 @@ export const router = createBrowserRouter([
         Component: Profile
       }
     ]
+  },
+  {
+    path: "/sign-in",
+    Component: SignIn
   }
 ]);

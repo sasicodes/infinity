@@ -1,3 +1,4 @@
+import { getAuthToken } from "@dynamic-labs/sdk-react-core";
 import { useState } from "react";
 import { API_URL } from "../constants";
 
@@ -24,12 +25,14 @@ export function useGenerate(): UseGenerateReturn {
   const generate = async (prompt: string) => {
     setStreaming(true);
     setCompletion("");
+    const token = getAuthToken();
 
     try {
       const response = await fetch(`${API_URL}/generate`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({ prompt })
       });

@@ -2,6 +2,7 @@ import { Code2, Image, Type } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useRef } from "react";
 import { saveNodeContent } from "../../../lib/idb";
+import { uploadToR2 } from "../../../lib/upload";
 
 interface EmptyContentProps {
   nodeId: string;
@@ -34,17 +35,25 @@ export const EmptyContent = ({
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const blobUrl = URL.createObjectURL(file);
 
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      const result = event.target?.result as ArrayBuffer;
-      await saveNodeContent({
+    // Save with blob URL first
+    await saveNodeContent({
+      id: nodeId,
+      content,
+      imageUrl: blobUrl
+    });
+
+    // Upload to R2 and update with permanent URL
+    uploadToR2(file).then((imageUrl) => {
+      saveNodeContent({
         id: nodeId,
         content,
-        image: new Blob([result], { type: file.type })
+        imageUrl
       });
-    };
-    reader.readAsArrayBuffer(file);
+      // Clean up blob URL
+      URL.revokeObjectURL(blobUrl);
+    });
   };
 
   return (

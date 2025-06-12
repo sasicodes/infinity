@@ -10,7 +10,7 @@ export interface FlowData {
 export interface NodeContent {
   id: string;
   content?: string;
-  image?: Blob;
+  imageUrl?: string;
   generated?: string;
 }
 
