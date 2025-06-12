@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { saveNodeContent } from "../../../lib/idb";
 
 interface TextContentProps {
@@ -13,13 +13,21 @@ interface TextContentProps {
 
 export const TextContent = ({
   nodeId,
-  content,
+  content: initialContent,
   imageUrl,
   isEditing,
   setIsEditing,
   onKeyDown
 }: TextContentProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [localContent, setLocalContent] = useState(initialContent);
+
+  // Only update local content when initial content changes and we're not editing
+  useEffect(() => {
+    if (!isEditing) {
+      setLocalContent(initialContent);
+    }
+  }, [initialContent, isEditing]);
 
   useEffect(() => {
     if (isEditing && textareaRef.current) {
@@ -30,18 +38,18 @@ export const TextContent = ({
     }
   }, [isEditing]);
 
-  const handleTextChange = async (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    await saveNodeContent({
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newContent = e.target.value;
+    setLocalContent(newContent);
+    saveNodeContent({
       id: nodeId,
-      content: e.target.value,
+      content: newContent,
       imageUrl
     });
   };
 
   const handleTextBlur = () => {
-    if (!content.trim()) {
+    if (!localContent.trim()) {
       setIsEditing(false);
     }
   };
@@ -61,7 +69,7 @@ export const TextContent = ({
       </motion.div>
       <textarea
         ref={textareaRef}
-        value={content}
+        value={localContent}
         onChange={handleTextChange}
         onBlur={handleTextBlur}
         onKeyDown={onKeyDown}
