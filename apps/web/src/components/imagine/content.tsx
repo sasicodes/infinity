@@ -1,6 +1,6 @@
 import type { Edge } from "@xyflow/react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGenerate } from "../../lib/hooks/use-generate";
 import { db, loadNodeContent, saveNodeContent } from "../../lib/idb";
 import { EmptyContent } from "./contents/empty-content";
@@ -68,9 +68,13 @@ export const Content = ({ nodeId }: ContentProps) => {
     return { images, texts, parentContents };
   }, [edges, nodeId]);
 
-  // Initialize new node in IndexedDB
+  const initialized = useRef(false);
+
   useEffect(() => {
     const initNode = async () => {
+      if (initialized.current) return;
+      initialized.current = true;
+
       const exists = await loadNodeContent(nodeId);
       if (!exists) {
         await saveNodeContent({

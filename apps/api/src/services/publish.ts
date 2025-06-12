@@ -4,6 +4,12 @@ import { prisma } from "../db";
 export const publish = async (c: Context) => {
   const { html, mediaUrl, ipId, content } = await c.req.json();
 
+  const user = c.get("user");
+
+  if (!user) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
   const post = await prisma.post.create({
     data: { html, mediaUrl, ipId, content, userId: "1" }
   });

@@ -11,6 +11,7 @@ import {
   useReactFlow
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useLiveQuery } from "dexie-react-hooks";
 import { MousePointerClick } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
@@ -18,7 +19,7 @@ import { v4 as uuidv4 } from "uuid";
 import { CustomEdge } from "../components/imagine/edge";
 import { CustomNode } from "../components/imagine/node";
 import { useSelectAll } from "../lib/hooks/use-select-all";
-import { loadFlowData, saveFlowData } from "../lib/idb";
+import { deleteNodeContent, loadFlowData, saveFlowData } from "../lib/idb";
 import { db } from "../lib/idb";
 
 const nodeTypes = {
@@ -39,6 +40,7 @@ const Flow = () => {
   const { screenToFlowPosition } = useReactFlow();
   const saveTimeoutRef = useRef<number | undefined>(undefined);
   const isInitialLoad = useRef(true);
+  const { user } = useDynamicContext();
 
   // Load initial data from IndexedDB
   useEffect(() => {
@@ -63,7 +65,7 @@ const Flow = () => {
     }
 
     saveTimeoutRef.current = window.setTimeout(async () => {
-      await saveFlowData({ nodes, edges });
+      await saveFlowData({ nodes, edges, id: user?.userId ?? "" });
     }, 500); // Debounce for 500ms
 
     return () => {
@@ -151,8 +153,9 @@ const Flow = () => {
 
   const onNodesDelete = useCallback(
     async (params: Node[]) => {
+      console.log("🚀 ~ onNodesDelete ~ params:", params);
       // Delete node content from IndexedDB
-      await Promise.all(params.map((node) => db.nodeContent.delete(node.id)));
+      await Promise.all(params.map((node) => deleteNodeContent(node.id)));
 
       // Update flow data by removing deleted nodes and their connected edges
       const deletedNodeIds = new Set(params.map((node) => node.id));
@@ -163,7 +166,11 @@ const Flow = () => {
       );
 
       // Save updated flow data
-      await saveFlowData({ nodes: updatedNodes, edges: updatedEdges });
+      await saveFlowData({
+        nodes: updatedNodes,
+        edges: updatedEdges,
+        id: user?.userId ?? ""
+      });
     },
     [nodes, edges]
   );

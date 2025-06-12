@@ -23,10 +23,9 @@ model Post {
 }
 
 model Flow {
-  id String @id @default(uuid())
+  id String @id
 
-  nodes  String // JSON stringified Node[]
-  edges  String // JSON stringified Edge[]
+  flow   String // JSON stringified Edge[] and Node[]
   userId String
 
   createdAt DateTime @default(now()) @db.Timestamp(6)
@@ -36,13 +35,10 @@ model Flow {
 }
 
 model Node {
-  id String @id @default(uuid())
+  id String @id
 
-  userId    String
-  nodeId    String
-  content   String?
-  imageUrl  String?
-  generated String?
+  userId String
+  node   String?
 
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)

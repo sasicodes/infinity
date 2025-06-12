@@ -8,6 +8,11 @@ import { z } from "zod";
 import { sessionInjector } from "./middlewares";
 import { generate } from "./services/generate";
 import { publish } from "./services/publish";
+import {
+  syncDeleteNodeContent,
+  syncFlow,
+  syncNodeContent
+} from "./services/sync";
 import { upload } from "./services/upload";
 
 const app = new Hono();
@@ -28,6 +33,21 @@ app.post(
     })
   ),
   publish
+);
+app.post(
+  "/sync/flow",
+  zValidator("json", z.object({ flow: z.string() })),
+  syncFlow
+);
+app.post(
+  "/sync/node",
+  zValidator("json", z.object({ node: z.string() })),
+  syncNodeContent
+);
+app.delete(
+  "/sync/node",
+  zValidator("json", z.object({ id: z.string() })),
+  syncDeleteNodeContent
 );
 
 serve(

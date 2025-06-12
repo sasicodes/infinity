@@ -1,8 +1,13 @@
 import type { Edge, Node } from "@xyflow/react";
 import Dexie, { type Table } from "dexie";
+import {
+  syncDeleteNodeContentToDb,
+  syncFlowToDb,
+  syncNodeContentToDb
+} from "./sync";
 
 export interface FlowData {
-  id?: number;
+  id: string;
   nodes: Node[];
   edges: Edge[];
 }
@@ -29,23 +34,33 @@ class FlowDatabase extends Dexie {
 
 export const db = new FlowDatabase();
 
-export async function saveFlowData(data: Omit<FlowData, "id">): Promise<void> {
+export async function saveFlowData(data: FlowData): Promise<void> {
   // Clear existing data
   await db.flowData.clear();
   // Save new data
   await db.flowData.add(data);
+
+  syncFlowToDb(data);
+}
+
+export async function saveNodeContent(data: NodeContent): Promise<void> {
+  await db.nodeContent.put(data);
+
+  syncNodeContentToDb(data);
 }
 
 export async function loadFlowData(): Promise<FlowData | undefined> {
   return db.flowData.orderBy("id").last();
 }
 
-export async function saveNodeContent(data: NodeContent): Promise<void> {
-  await db.nodeContent.put(data);
-}
-
 export async function loadNodeContent(
   id: string
 ): Promise<NodeContent | undefined> {
   return db.nodeContent.get(id);
+}
+
+export async function deleteNodeContent(id: string): Promise<void> {
+  await db.nodeContent.delete(id);
+
+  syncDeleteNodeContentToDb(id);
 }

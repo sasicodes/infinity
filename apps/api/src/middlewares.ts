@@ -35,7 +35,8 @@ export const sessionInjector = async (c: Context, next: Next) => {
 
   c.set("user", {
     username: decodedToken.username,
-    email: decodedToken.email
+    email: decodedToken.email,
+    id: decodedToken.sub
   });
 
   return next();
