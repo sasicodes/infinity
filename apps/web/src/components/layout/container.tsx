@@ -23,7 +23,7 @@ export const Container = () => {
       <div
         className={tw(
           isCanvasPage
-            ? "absolute left-0 z-10 mt-16 h-full"
+            ? "absolute left-0 z-10 h-full pt-16"
             : "sticky top-0 bottom-0 col-span-1 h-screen"
         )}
       >
