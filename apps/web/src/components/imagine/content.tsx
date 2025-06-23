@@ -148,6 +148,7 @@ export const Content = ({ nodeId, flowId }: ContentProps) => {
         <Loader />
       ) : completion || generated ? (
         <GenerateContent
+          nodeId={nodeId}
           completion={completion}
           generated={generated}
           streaming={streaming}

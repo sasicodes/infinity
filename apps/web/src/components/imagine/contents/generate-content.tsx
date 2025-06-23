@@ -1,13 +1,17 @@
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import type { LicenseTerms } from "@story-protocol/core-sdk";
-import { Code, RefreshCcw } from "lucide-react";
+import { Code, LoaderIcon, RefreshCcw } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { toHex, zeroAddress } from "viem";
 import {
   ContentStandard,
   PIL_PDF_URI,
   WEBSITE_URL
 } from "../../../lib/constants";
+import { injectStyles } from "../../../lib/functions";
 import { useStoryClient } from "../../../lib/hooks/use-story";
+import { createPost } from "../../../lib/sync";
 import { uploadJsonToR2 } from "../../../lib/upload";
 import { Button } from "../../ui/button";
 import { Loader } from "../loader";
@@ -15,32 +19,21 @@ import { Loader } from "../loader";
 interface GenerateContentProps {
   completion?: string;
   generated?: string;
+  nodeId: string;
   streaming: boolean;
   regenerate: () => void;
 }
 
-const injectStyles = (content: string) => {
-  const styles = `
-    <style>
-      html, body {
-        transform: scale(0.7);
-        -ms-overflow-style: none !important;
-        scrollbar-width: none !important;
-      }
-      ::-webkit-scrollbar {
-        display: none !important;
-      }
-    </style>
-  `;
-  return content.replace("</head>", `${styles}</head>`);
-};
-
 export const GenerateContent = ({
+  nodeId,
   completion,
   generated,
   streaming,
   regenerate
 }: GenerateContentProps) => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   if (streaming) {
     return <Loader />;
   }
@@ -54,90 +47,107 @@ export const GenerateContent = ({
     if (!story) {
       return;
     }
+    setLoading(true);
+    try {
+      const offchainData = {
+        territory: [],
+        channelsOfDistribution: [],
+        attribution: true,
+        contentStandards: [
+          ContentStandard.NO_HATE,
+          ContentStandard.SUITABLE_FOR_ALL_AGES,
+          ContentStandard.NO_DRUGS_OR_WEAPONS,
+          ContentStandard.NO_PORNOGRAPHY
+        ],
+        sublicensable: false,
+        aiLearningModels: false,
+        restrictionOnCrossPlatformUse: false,
+        governingLaw: "California, USA",
+        additionalParameters: {},
+        PILUri: PIL_PDF_URI,
+        name: "license-off-chain-data"
+      };
 
-    const offchainData = {
-      territory: [],
-      channelsOfDistribution: [],
-      attribution: true,
-      contentStandards: [
-        ContentStandard.NO_HATE,
-        ContentStandard.SUITABLE_FOR_ALL_AGES,
-        ContentStandard.NO_DRUGS_OR_WEAPONS,
-        ContentStandard.NO_PORNOGRAPHY
-      ],
-      sublicensable: false,
-      aiLearningModels: false,
-      restrictionOnCrossPlatformUse: false,
-      governingLaw: "California, USA",
-      additionalParameters: {},
-      PILUri: PIL_PDF_URI,
-      name: "license-off-chain-data"
-    };
+      const offchainDataUrl = await uploadJsonToR2(
+        JSON.stringify(offchainData)
+      );
 
-    const offchainDataUrl = await uploadJsonToR2(JSON.stringify(offchainData));
+      const metadata = {
+        name: `Post by ${user?.username}`,
+        description: content,
+        external_url: `${WEBSITE_URL}/u/${user?.username}`,
+        mediaType: "text/html"
+        // image: "",
+        // attributes: [],
+        // mediaUrl: "",
+        // mediaHash: "",
+        // animation_url: "",
+        // creators: []
+      };
 
-    const metadata = {
-      name: `Post by ${user?.username}`,
-      description: content,
-      external_url: `${WEBSITE_URL}/u/${user?.username}`,
-      mediaType: "text/html"
-      // image: "",
-      // attributes: [],
-      // mediaUrl: "",
-      // mediaHash: "",
-      // animation_url: "",
-      // creators: []
-    };
+      const metadataUrl = await uploadJsonToR2(JSON.stringify(metadata));
 
-    const metadataUrl = await uploadJsonToR2(JSON.stringify(metadata));
+      const commercialRemixTerms: LicenseTerms = {
+        transferable: true,
+        royaltyPolicy: "0xBe54FB168b3c982b7AaE60dB6CF75Bd8447b390E", // RoyaltyPolicyLAP address from https://docs.story.foundation/docs/deployed-smart-contracts
+        defaultMintingFee: 0n,
+        expiration: 0n,
+        commercialUse: true,
+        commercialAttribution: true,
+        commercializerChecker: zeroAddress,
+        commercializerCheckerData: zeroAddress,
+        commercialRevShare: 10, // can claim 50% of derivative revenue
+        commercialRevCeiling: 0n,
+        derivativesAllowed: true,
+        derivativesAttribution: true,
+        derivativesApproval: false,
+        derivativesReciprocal: true,
+        derivativeRevCeiling: 0n,
+        currency: "0x1514000000000000000000000000000000000000", // $WIP address from https://docs.story.foundation/docs/deployed-smart-contracts
+        uri: offchainDataUrl
+      };
 
-    const commercialRemixTerms: LicenseTerms = {
-      transferable: true,
-      royaltyPolicy: "0xBe54FB168b3c982b7AaE60dB6CF75Bd8447b390E", // RoyaltyPolicyLAP address from https://docs.story.foundation/docs/deployed-smart-contracts
-      defaultMintingFee: 0n,
-      expiration: 0n,
-      commercialUse: true,
-      commercialAttribution: true,
-      commercializerChecker: zeroAddress,
-      commercializerCheckerData: zeroAddress,
-      commercialRevShare: 10, // can claim 50% of derivative revenue
-      commercialRevCeiling: 0n,
-      derivativesAllowed: true,
-      derivativesAttribution: true,
-      derivativesApproval: false,
-      derivativesReciprocal: true,
-      derivativeRevCeiling: 0n,
-      currency: "0x1514000000000000000000000000000000000000", // $WIP address from https://docs.story.foundation/docs/deployed-smart-contracts
-      uri: offchainDataUrl
-    };
-
-    const response = await story.ipAsset.mintAndRegisterIpAssetWithPilTerms({
-      spgNftContract: "0xc32A8a0FF3beDDDa58393d022aF433e78739FAbc",
-      licenseTermsData: [
-        {
-          terms: commercialRemixTerms,
-          licensingConfig: {
-            isSet: false,
-            mintingFee: 0,
-            licensingHook: zeroAddress,
-            hookData: zeroAddress,
-            commercialRevShare: 0,
-            disabled: false,
-            expectMinimumGroupRewardShare: 0,
-            expectGroupRewardPool: zeroAddress
+      const response = await story.ipAsset.mintAndRegisterIpAssetWithPilTerms({
+        spgNftContract: "0xc32A8a0FF3beDDDa58393d022aF433e78739FAbc",
+        licenseTermsData: [
+          {
+            terms: commercialRemixTerms,
+            licensingConfig: {
+              isSet: false,
+              mintingFee: 0,
+              licensingHook: zeroAddress,
+              hookData: zeroAddress,
+              commercialRevShare: 0,
+              disabled: false,
+              expectMinimumGroupRewardShare: 0,
+              expectGroupRewardPool: zeroAddress
+            }
           }
+        ],
+        ipMetadata: {
+          ipMetadataURI: metadataUrl,
+          ipMetadataHash: toHex("", { size: 32 }),
+          nftMetadataHash: toHex("", { size: 32 }),
+          nftMetadataURI: metadataUrl
         }
-      ],
-      ipMetadata: {
-        ipMetadataURI: metadataUrl,
-        ipMetadataHash: toHex("", { size: 32 }),
-        nftMetadataHash: toHex("", { size: 32 }),
-        nftMetadataURI: metadataUrl
+      });
+      const ipId = response.ipId;
+      console.info(
+        `Root IPA created at transaction hash ${response.txHash}, IPA ID: ${response.ipId}`
+      );
+      if (!ipId) {
+        return console.error("Failed to create IP");
       }
-    });
-    console.info(
-      `Root IPA created at transaction hash ${response.txHash}, IPA ID: ${response.ipId}`
-    );
+      const success = await createPost(ipId, nodeId, content);
+      if (!success) {
+        return console.error("Failed to create post");
+      }
+      navigate("/");
+      setLoading(false);
+    } catch (error) {
+      console.error("🚀 ~ onPost ~ error:", error);
+      setLoading(false);
+    }
   };
 
   return (
@@ -173,8 +183,9 @@ export const GenerateContent = ({
           size="xs"
           className="scale-50 px-4"
           onClick={onPost}
+          disabled={loading}
         >
-          Post
+          {loading ? <LoaderIcon className="size-3 animate-spin" /> : "Post"}
         </Button>
       </div>
       <iframe

@@ -7,7 +7,7 @@ import { cors } from "hono/cors";
 import { z } from "zod";
 import { sessionInjector } from "./middlewares";
 import { generate } from "./services/generate";
-import { publish } from "./services/publish";
+import { createPost, getAllPosts } from "./services/post";
 import {
   getFlowAndNodeContentFromDb,
   syncDeleteNodeContent,
@@ -23,19 +23,6 @@ app.use("*", cors()).use(sessionInjector);
 app.post("/upload", upload);
 app.post("/upload-json", uploadJson);
 app.post("/generate", generate);
-app.post(
-  "/publish",
-  zValidator(
-    "json",
-    z.object({
-      ipId: z.string(),
-      content: z.string().optional(),
-      html: z.string().optional(),
-      mediaUrl: z.string().optional()
-    })
-  ),
-  publish
-);
 app.post(
   "/sync/flow",
   zValidator("json", z.object({ flow: z.string() })),
@@ -55,6 +42,20 @@ app.get(
   "/sync/all",
   zValidator("query", z.object({ flowId: z.string() })),
   getFlowAndNodeContentFromDb
+);
+
+app.post(
+  "/post/new",
+  zValidator(
+    "json",
+    z.object({ ipId: z.string(), html: z.string(), nodeId: z.string() })
+  ),
+  createPost
+);
+app.get(
+  "/posts",
+  zValidator("query", z.object({ page: z.string(), pageSize: z.string() })),
+  getAllPosts
 );
 
 serve(

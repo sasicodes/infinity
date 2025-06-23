@@ -5,7 +5,7 @@ import { type ButtonHTMLAttributes, forwardRef, memo } from "react";
 import { tw } from "./tw";
 
 const buttonVariants = cva(
-  "flex items-center justify-center transition-all font-medium relative disabled:cursor-not-allowed overflow-hidden rounded-full text-sm shrink-0",
+  "flex items-center justify-center transition-all font-medium relative disabled:pointer-events-none disabled:opacity-80 disabled:cursor-not-allowed overflow-hidden rounded-full text-sm shrink-0",
   {
     variants: {
       variant: {

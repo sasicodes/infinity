@@ -53,3 +53,39 @@ export const syncFlowAndNodeContentFromDb = async (flowId: string) => {
   const result = await response.json();
   return { flow: result.flow, nodes: result.nodes };
 };
+
+export const createPost = async (
+  ipId: string,
+  nodeId: string,
+  html: string
+) => {
+  const response = await fetch(`${API_URL}/post/new`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getAuthToken()}`
+    },
+    body: JSON.stringify({ ipId, nodeId, html })
+  });
+  const result = await response.json();
+  return result.success;
+};
+
+export const getAllPosts = async (page = 1, pageSize = 10) => {
+  const res = await fetch(
+    `${API_URL}/posts?page=${page}&pageSize=${pageSize}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getAuthToken()}`
+      }
+    }
+  );
+  const data = await res.json();
+
+  if (!data.success) {
+    throw new Error("Failed to fetch posts");
+  }
+
+  return data;
+};
