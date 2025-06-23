@@ -16,7 +16,10 @@ export const SignIn = () => {
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">
-      <Button onClick={() => setShowAuthFlow(true)}>Sign in</Button>
+      <div className="flex flex-col items-center gap-4">
+        <div className="font-medium text-lg">Login to use the app</div>
+        <Button onClick={() => setShowAuthFlow(true)}>Sign in</Button>
+      </div>
     </div>
   );
 };

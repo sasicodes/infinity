@@ -89,3 +89,22 @@ export const getAllPosts = async (page = 1, pageSize = 10) => {
 
   return data;
 };
+
+export const getMyPosts = async (page = 1, pageSize = 10) => {
+  const res = await fetch(
+    `${API_URL}/posts/me?page=${page}&pageSize=${pageSize}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getAuthToken()}`
+      }
+    }
+  );
+  const data = await res.json();
+
+  if (!data.success) {
+    throw new Error("Failed to fetch posts");
+  }
+
+  return data;
+};

@@ -21,7 +21,12 @@ export const UserMenu = () => {
         <DropdownMenuItem onClick={() => navigate(`/u/${user?.username}`)}>
           Profile
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleLogOut()}>
+        <DropdownMenuItem
+          onClick={() => {
+            handleLogOut();
+            navigate("/");
+          }}
+        >
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>

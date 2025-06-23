@@ -34,6 +34,38 @@ export const getAllPosts = async (c: Context) => {
 
   const [posts, total] = await prisma.$transaction([
     prisma.post.findMany({
+      skip,
+      take: pageSize,
+      orderBy: { createdAt: "desc" }
+    }),
+    prisma.post.count({})
+  ]);
+
+  return c.json({
+    posts,
+    pagination: {
+      page,
+      pageSize,
+      total,
+      totalPages: Math.ceil(total / pageSize)
+    },
+    success: true
+  });
+};
+
+export const getMyPosts = async (c: Context) => {
+  const user = c.get("user");
+
+  if (!user) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const page = Number(c.req.query("page") ?? "1");
+  const pageSize = Number(c.req.query("pageSize") ?? "10");
+  const skip = (page - 1) * pageSize;
+
+  const [posts, total] = await prisma.$transaction([
+    prisma.post.findMany({
       where: { userId: user.id },
       skip,
       take: pageSize,
