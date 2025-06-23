@@ -11,7 +11,6 @@ import {
   useReactFlow
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useLiveQuery } from "dexie-react-hooks";
 import { MousePointerClick } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
@@ -46,25 +45,30 @@ const Flow = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition } = useReactFlow();
   const isInitialLoad = useRef(true);
-  const { user } = useDynamicContext();
   const params = useParams();
   const flowId = params.flowId;
 
   // Load initial data from IndexedDB
   useEffect(() => {
+    // Clear existing nodes/edges when flowId changes
+    setNodes([]);
+    setEdges([]);
+
     const loadData = async () => {
-      const data = await loadFlowData();
+      const data = await loadFlowData(flowId as string);
       if (data) {
         setNodes(data.nodes || []);
         setEdges(data.edges || []);
       }
       isInitialLoad.current = false;
     };
-    loadData();
-  }, [setNodes, setEdges]);
+    if (flowId) {
+      loadData();
+    }
+  }, [setNodes, setEdges, flowId]);
 
   const debouncedSaveFlowData = debounce(async () => {
-    await saveFlowData({ nodes, edges, id: user?.userId ?? "" });
+    await saveFlowData({ nodes, edges, id: flowId as string });
   }, 500);
 
   // Save data to IndexedDB with debouncing
@@ -170,7 +174,7 @@ const Flow = () => {
       await saveFlowData({
         nodes: updatedNodes,
         edges: updatedEdges,
-        id: user?.userId ?? ""
+        id: flowId as string
       });
     },
     [nodes, edges]
@@ -217,7 +221,10 @@ const Flow = () => {
 };
 
 export const Imagine = () => {
-  const data = useLiveQuery(() => db.flowData.orderBy("id").last());
+  const params = useParams();
+  const flowId = params.flowId;
+
+  const data = useLiveQuery(() => db.flowData.get(flowId as string));
   const isLoading = data === undefined;
   const isStarted = data?.nodes && data.nodes.length > 0;
 

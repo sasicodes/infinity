@@ -10,6 +10,12 @@ export const Sidebar = () => {
   const navigate = useNavigate();
   const isHomePage = location.pathname === "/";
   const isExplorePage = location.pathname === "/explore";
+
+  const onCreateFlow = () => {
+    const uuid = uuidv4();
+    navigate(`/imagine/${uuid}`);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center gap-4 px-3 py-4">
       <Link to="/" className="relative mb-0.5">
@@ -78,13 +84,7 @@ export const Sidebar = () => {
             />
           </Link>
         </div>
-        <Button
-          size="icon"
-          onClick={() => {
-            const uuid = uuidv4();
-            navigate(`/imagine/${uuid}`);
-          }}
-        >
+        <Button size="icon" onClick={onCreateFlow}>
           <PlusIcon className="size-4" />
         </Button>
       </div>

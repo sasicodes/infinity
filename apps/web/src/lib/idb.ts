@@ -28,7 +28,7 @@ class FlowDatabase extends Dexie {
   constructor() {
     super("infinity");
     this.version(1).stores({
-      flowData: "++id",
+      flowData: "id",
       nodeContent: "id"
     });
   }
@@ -41,8 +41,7 @@ const debouncedSyncFlow = debounce(async (data: FlowData) => {
 }, 500);
 
 export async function saveFlowData(data: FlowData): Promise<void> {
-  await db.flowData.clear();
-  await db.flowData.add(data);
+  await db.flowData.put(data);
 
   debouncedSyncFlow(data);
 }
@@ -60,8 +59,10 @@ export async function saveNodeContent(
   debouncedSync(data, flowId);
 }
 
-export async function loadFlowData(): Promise<FlowData | undefined> {
-  return db.flowData.orderBy("id").last();
+export async function loadFlowData(
+  flowId: string
+): Promise<FlowData | undefined> {
+  return db.flowData.get(flowId);
 }
 
 export async function loadNodeContent(
@@ -81,10 +82,10 @@ export async function deleteNodeContent(
 
 export async function initializeFromDb(flowId: string) {
   const { flow, nodes } = await syncFlowAndNodeContentFromDb(flowId);
-  if (flow) {
-    await db.flowData.add(flow);
+  if (flow.nodes) {
+    await db.flowData.put(flow);
   }
-  if (nodes) {
+  if (nodes?.length) {
     await db.nodeContent.bulkPut(nodes);
   }
 }
