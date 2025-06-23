@@ -4,4 +4,4 @@ const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY
 });
 
-export const codeModel = openrouter("meta-llama/llama-4-maverick:free");
+export const codeModel = openrouter("mistralai/devstral-small:free");

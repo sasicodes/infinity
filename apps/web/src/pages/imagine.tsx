@@ -224,7 +224,14 @@ export const Imagine = () => {
   const params = useParams();
   const flowId = params.flowId;
 
-  const data = useLiveQuery(() => db.flowData.get(flowId as string));
+  const data = useLiveQuery(async () => {
+    const existingData = await db.flowData.get(flowId as string);
+    if (!existingData && flowId) {
+      return null;
+    }
+    return existingData;
+  }, [flowId]);
+
   const isLoading = data === undefined;
   const isStarted = data?.nodes && data.nodes.length > 0;
 

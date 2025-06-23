@@ -19,11 +19,10 @@ export const systemPrompt = `
 
       4. Use Tailwind CSS classes for styling and layout with Inter font as the default font family
 
-      5. Implement smooth animations using Motion.js with the correct JavaScript syntax:
-      - Use animate() function for animations
-      - Example: animate(".button", { scale: 1.1 }, { type: "spring", stiffness: 300 })
-      - For hover effects, use event listeners with animate()
-      - Example: 
+      5. If the user requests animations, implement smooth animations using Motion.js with the correct JavaScript syntax,
+      (BELOW IS JUST EXAMPLE, BE CREATIVE AND USE YOUR IMAGINATION):
+      - Use animate() function for animations - Example: animate(".button", { scale: 1.1 }, { type: "spring", stiffness: 300 })
+      - For hover effects, use event listeners with animate()- Example: 
         <button class="button">Hover me</button>
         <script>
           const button = document.querySelector('.button');
