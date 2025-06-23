@@ -37,6 +37,7 @@ model Flow {
 model Node {
   id String @id
 
+  flowId String
   userId String
   node   String?
 

@@ -1,7 +1,9 @@
 import type { Edge, Node } from "@xyflow/react";
 import Dexie, { type Table } from "dexie";
+import { debounce } from "./debounce";
 import {
   syncDeleteNodeContentToDb,
+  syncFlowAndNodeContentFromDb,
   syncFlowToDb,
   syncNodeContentToDb
 } from "./sync";
@@ -34,19 +36,28 @@ class FlowDatabase extends Dexie {
 
 export const db = new FlowDatabase();
 
+const debouncedSyncFlow = debounce(async (data: FlowData) => {
+  await syncFlowToDb(data);
+}, 500);
+
 export async function saveFlowData(data: FlowData): Promise<void> {
-  // Clear existing data
   await db.flowData.clear();
-  // Save new data
   await db.flowData.add(data);
 
-  syncFlowToDb(data);
+  debouncedSyncFlow(data);
 }
 
-export async function saveNodeContent(data: NodeContent): Promise<void> {
+const debouncedSync = debounce(async (data: NodeContent, flowId: string) => {
+  await syncNodeContentToDb(data, flowId);
+}, 500);
+
+export async function saveNodeContent(
+  data: NodeContent,
+  flowId: string
+): Promise<void> {
   await db.nodeContent.put(data);
 
-  syncNodeContentToDb(data);
+  debouncedSync(data, flowId);
 }
 
 export async function loadFlowData(): Promise<FlowData | undefined> {
@@ -59,8 +70,21 @@ export async function loadNodeContent(
   return db.nodeContent.get(id);
 }
 
-export async function deleteNodeContent(id: string): Promise<void> {
+export async function deleteNodeContent(
+  id: string,
+  flowId: string
+): Promise<void> {
   await db.nodeContent.delete(id);
 
-  syncDeleteNodeContentToDb(id);
+  syncDeleteNodeContentToDb(id, flowId);
+}
+
+export async function initializeFromDb(flowId: string) {
+  const { flow, nodes } = await syncFlowAndNodeContentFromDb(flowId);
+  if (flow) {
+    await db.flowData.add(flow);
+  }
+  if (nodes) {
+    await db.nodeContent.bulkPut(nodes);
+  }
 }

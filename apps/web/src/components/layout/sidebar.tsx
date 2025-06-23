@@ -1,14 +1,15 @@
 import { HomeIcon, InfinityIcon, PlusIcon, SparklesIcon } from "lucide-react";
 import { motion } from "motion/react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
+import { v4 as uuidv4 } from "uuid";
 import { Button } from "../ui/button";
 import { tw } from "../ui/tw";
 
 export const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isHomePage = location.pathname === "/";
   const isExplorePage = location.pathname === "/explore";
-
   return (
     <div className="flex flex-col items-center justify-center gap-4 px-3 py-4">
       <Link to="/" className="relative mb-0.5">
@@ -77,11 +78,15 @@ export const Sidebar = () => {
             />
           </Link>
         </div>
-        <Link to="/imagine">
-          <Button size="icon">
-            <PlusIcon className="size-4" />
-          </Button>
-        </Link>
+        <Button
+          size="icon"
+          onClick={() => {
+            const uuid = uuidv4();
+            navigate(`/imagine/${uuid}`);
+          }}
+        >
+          <PlusIcon className="size-4" />
+        </Button>
       </div>
     </div>
   );

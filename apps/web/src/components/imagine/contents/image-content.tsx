@@ -3,6 +3,7 @@ import { saveNodeContent } from "../../../lib/idb";
 
 interface ImageContentProps {
   nodeId: string;
+  flowId: string;
   imageUrl: string;
   content: string;
   isEditing: boolean;
@@ -12,6 +13,7 @@ interface ImageContentProps {
 
 export const ImageContent = ({
   nodeId,
+  flowId,
   imageUrl,
   content,
   isEditing,
@@ -40,11 +42,14 @@ export const ImageContent = ({
           <button
             type="button"
             onClick={async () => {
-              await saveNodeContent({
-                id: nodeId,
-                content,
-                imageUrl: undefined
-              });
+              await saveNodeContent(
+                {
+                  id: nodeId,
+                  content,
+                  imageUrl: undefined
+                },
+                flowId
+              );
               setIsEditing(false);
             }}
             onKeyDown={onKeyDown}

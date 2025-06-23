@@ -20,11 +20,11 @@ export const syncFlow = async (c: Context) => {
       },
       update: {
         id,
-        flow: JSON.stringify(flow)
+        flow
       },
       create: {
         id,
-        flow: JSON.stringify(flow),
+        flow,
         userId: user.id
       }
     });
@@ -37,7 +37,7 @@ export const syncFlow = async (c: Context) => {
 };
 
 export const syncNodeContent = async (c: Context) => {
-  const { node } = await c.req.json();
+  const { node, flowId } = await c.req.json();
 
   const user = c.get("user");
 
@@ -55,13 +55,15 @@ export const syncNodeContent = async (c: Context) => {
       },
       update: {
         id,
-        node: JSON.stringify(node),
-        userId: user.id
+        node,
+        userId: user.id,
+        flowId
       },
       create: {
         id,
-        node: JSON.stringify(node),
-        userId: user.id
+        node,
+        userId: user.id,
+        flowId
       }
     });
 
@@ -76,7 +78,7 @@ export const syncNodeContent = async (c: Context) => {
 };
 
 export const syncDeleteNodeContent = async (c: Context) => {
-  const { id } = await c.req.json();
+  const { id, flowId } = await c.req.json();
 
   const user = c.get("user");
 
@@ -87,7 +89,8 @@ export const syncDeleteNodeContent = async (c: Context) => {
   try {
     await prisma.node.delete({
       where: {
-        id
+        id,
+        flowId
       }
     });
 
@@ -99,4 +102,32 @@ export const syncDeleteNodeContent = async (c: Context) => {
       500
     );
   }
+};
+
+export const getFlowAndNodeContentFromDb = async (c: Context) => {
+  const user = c.get("user");
+
+  if (!user) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const { flowId } = c.req.query();
+
+  const data = await prisma.flow.findFirst({
+    where: {
+      userId: user.id,
+      id: flowId
+    }
+  });
+  const parsedFlow = JSON.parse(data?.flow || "{}");
+
+  const nodes = await prisma.node.findMany({
+    where: {
+      userId: user.id,
+      flowId
+    }
+  });
+  const parsedNodes = nodes.map((n) => JSON.parse(n.node || "{}"));
+
+  return c.json({ flow: parsedFlow, nodes: parsedNodes });
 };

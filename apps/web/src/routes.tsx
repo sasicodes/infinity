@@ -11,7 +11,7 @@ export const router = createBrowserRouter([
     Component: Container,
     children: [
       {
-        path: "/imagine",
+        path: "/imagine/:flowId",
         Component: Imagine
       },
       {

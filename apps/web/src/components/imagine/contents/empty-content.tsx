@@ -6,6 +6,7 @@ import { uploadToR2 } from "../../../lib/upload";
 
 interface EmptyContentProps {
   nodeId: string;
+  flowId: string;
   content: string;
   parentContent?: {
     images: number;
@@ -19,6 +20,7 @@ interface EmptyContentProps {
 
 export const EmptyContent = ({
   nodeId,
+  flowId,
   content,
   parentContent,
   onKeyDown,
@@ -38,19 +40,25 @@ export const EmptyContent = ({
     const blobUrl = URL.createObjectURL(file);
 
     // Save with blob URL first
-    await saveNodeContent({
-      id: nodeId,
-      content,
-      imageUrl: blobUrl
-    });
+    await saveNodeContent(
+      {
+        id: nodeId,
+        content,
+        imageUrl: blobUrl
+      },
+      flowId
+    );
 
     // Upload to R2 and update with permanent URL
     uploadToR2(file).then((imageUrl) => {
-      saveNodeContent({
-        id: nodeId,
-        content,
-        imageUrl
-      });
+      saveNodeContent(
+        {
+          id: nodeId,
+          content,
+          imageUrl
+        },
+        flowId
+      );
       // Clean up blob URL
       URL.revokeObjectURL(blobUrl);
     });

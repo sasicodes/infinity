@@ -11,14 +11,15 @@ import { Loader } from "./loader";
 
 interface ContentProps {
   nodeId: string;
+  flowId: string;
 }
 
-export const Content = ({ nodeId }: ContentProps) => {
+export const Content = ({ nodeId, flowId }: ContentProps) => {
   const { completion, generate, streaming, setStreaming } = useGenerate();
   const [isEditing, setIsEditing] = useState(false);
 
   // Use live query to read from IndexedDB
-  const nodeData = useLiveQuery(() => db.nodeContent.get(nodeId), [nodeId]);
+  const nodeData = useLiveQuery(() => loadNodeContent(nodeId), [nodeId]);
   const edges = useLiveQuery(() =>
     db.flowData
       .orderBy("id")
@@ -77,12 +78,15 @@ export const Content = ({ nodeId }: ContentProps) => {
 
       const exists = await loadNodeContent(nodeId);
       if (!exists) {
-        await saveNodeContent({
-          id: nodeId,
-          content: "",
-          imageUrl: undefined,
-          generated: undefined
-        });
+        await saveNodeContent(
+          {
+            id: nodeId,
+            content: "",
+            imageUrl: undefined,
+            generated: undefined
+          },
+          flowId
+        );
       }
     };
     initNode();
@@ -122,12 +126,15 @@ export const Content = ({ nodeId }: ContentProps) => {
   // Store completion when available
   useEffect(() => {
     if (completion) {
-      saveNodeContent({
-        id: nodeId,
-        content,
-        imageUrl,
-        generated: completion
-      });
+      saveNodeContent(
+        {
+          id: nodeId,
+          content,
+          imageUrl,
+          generated: completion
+        },
+        flowId
+      );
     }
   }, [completion, nodeId, content, imageUrl]);
 
@@ -148,6 +155,7 @@ export const Content = ({ nodeId }: ContentProps) => {
         />
       ) : imageUrl ? (
         <ImageContent
+          flowId={flowId}
           nodeId={nodeId}
           imageUrl={imageUrl}
           content={content}
@@ -157,6 +165,7 @@ export const Content = ({ nodeId }: ContentProps) => {
         />
       ) : isEditing ? (
         <TextContent
+          flowId={flowId}
           nodeId={nodeId}
           content={content}
           imageUrl={imageUrl}
@@ -166,6 +175,7 @@ export const Content = ({ nodeId }: ContentProps) => {
         />
       ) : (
         <EmptyContent
+          flowId={flowId}
           nodeId={nodeId}
           content={content}
           parentContent={parentContent}

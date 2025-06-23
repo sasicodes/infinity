@@ -15,28 +15,41 @@ export const syncFlowToDb = async (data: FlowData) => {
   return result.success;
 };
 
-export const syncNodeContentToDb = async (data: NodeContent) => {
+export const syncNodeContentToDb = async (
+  data: NodeContent,
+  flowId: string
+) => {
   const response = await fetch(`${API_URL}/sync/node`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getAuthToken()}`
     },
-    body: JSON.stringify({ node: JSON.stringify(data) })
+    body: JSON.stringify({ node: JSON.stringify(data), flowId })
   });
   const result = await response.json();
   return result.success;
 };
 
-export const syncDeleteNodeContentToDb = async (id: string) => {
+export const syncDeleteNodeContentToDb = async (id: string, flowId: string) => {
   const response = await fetch(`${API_URL}/sync/node`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getAuthToken()}`
     },
-    body: JSON.stringify({ id })
+    body: JSON.stringify({ id, flowId })
   });
   const result = await response.json();
   return result.success;
+};
+
+export const syncFlowAndNodeContentFromDb = async (flowId: string) => {
+  const response = await fetch(`${API_URL}/sync/all?flowId=${flowId}`, {
+    headers: {
+      Authorization: `Bearer ${getAuthToken()}`
+    }
+  });
+  const result = await response.json();
+  return { flow: result.flow, nodes: result.nodes };
 };

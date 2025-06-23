@@ -4,6 +4,7 @@ import { saveNodeContent } from "../../../lib/idb";
 
 interface TextContentProps {
   nodeId: string;
+  flowId: string;
   content: string;
   imageUrl: string | undefined;
   isEditing: boolean;
@@ -13,6 +14,7 @@ interface TextContentProps {
 
 export const TextContent = ({
   nodeId,
+  flowId,
   content: initialContent,
   imageUrl,
   isEditing,
@@ -41,11 +43,14 @@ export const TextContent = ({
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
     setLocalContent(newContent);
-    saveNodeContent({
-      id: nodeId,
-      content: newContent,
-      imageUrl
-    });
+    saveNodeContent(
+      {
+        id: nodeId,
+        content: newContent,
+        imageUrl
+      },
+      flowId
+    );
   };
 
   const handleTextBlur = () => {

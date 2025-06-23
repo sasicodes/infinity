@@ -11,7 +11,7 @@ export const Header = () => {
   return (
     <div className="sticky top-0 z-10 flex h-[var(--header-height)] items-center justify-between border-neutral-200 border-b bg-[#f5f5f550] px-4 py-3 backdrop-blur-2xl">
       <span className="font-medium text-neutral-500 text-sm">
-        {location.pathname}
+        /{location.pathname.split("/")[1] || ""}
       </span>
       {isLoggedIn ? (
         <UserMenu />

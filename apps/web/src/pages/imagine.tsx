@@ -15,11 +15,18 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useLiveQuery } from "dexie-react-hooks";
 import { MousePointerClick } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
+import { useParams } from "react-router";
 import { v4 as uuidv4 } from "uuid";
 import { CustomEdge } from "../components/imagine/edge";
 import { CustomNode } from "../components/imagine/node";
+import { debounce } from "../lib/debounce";
 import { useSelectAll } from "../lib/hooks/use-select-all";
-import { deleteNodeContent, loadFlowData, saveFlowData } from "../lib/idb";
+import {
+  deleteNodeContent,
+  initializeFromDb,
+  loadFlowData,
+  saveFlowData
+} from "../lib/idb";
 import { db } from "../lib/idb";
 
 const nodeTypes = {
@@ -38,41 +45,34 @@ const Flow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition } = useReactFlow();
-  const saveTimeoutRef = useRef<number | undefined>(undefined);
   const isInitialLoad = useRef(true);
   const { user } = useDynamicContext();
+  const params = useParams();
+  const flowId = params.flowId;
 
   // Load initial data from IndexedDB
   useEffect(() => {
     const loadData = async () => {
       const data = await loadFlowData();
       if (data) {
-        setNodes(data.nodes);
-        setEdges(data.edges);
+        setNodes(data.nodes || []);
+        setEdges(data.edges || []);
       }
       isInitialLoad.current = false;
     };
     loadData();
   }, [setNodes, setEdges]);
 
+  const debouncedSaveFlowData = debounce(async () => {
+    await saveFlowData({ nodes, edges, id: user?.userId ?? "" });
+  }, 500);
+
   // Save data to IndexedDB with debouncing
   useEffect(() => {
     // Don't save if we're still loading initial data or if we have no data
     if (isInitialLoad.current || (!nodes.length && !edges.length)) return;
 
-    if (saveTimeoutRef.current) {
-      window.clearTimeout(saveTimeoutRef.current);
-    }
-
-    saveTimeoutRef.current = window.setTimeout(async () => {
-      await saveFlowData({ nodes, edges, id: user?.userId ?? "" });
-    }, 500); // Debounce for 500ms
-
-    return () => {
-      if (saveTimeoutRef.current) {
-        window.clearTimeout(saveTimeoutRef.current);
-      }
-    };
+    debouncedSaveFlowData();
   }, [nodes, edges]);
 
   const validateConnection = useCallback(
@@ -154,7 +154,9 @@ const Flow = () => {
   const onNodesDelete = useCallback(
     async (params: Node[]) => {
       // Delete node content from IndexedDB
-      await Promise.all(params.map((node) => deleteNodeContent(node.id)));
+      await Promise.all(
+        params.map((node) => deleteNodeContent(node.id, flowId as string))
+      );
 
       // Update flow data by removing deleted nodes and their connected edges
       const deletedNodeIds = new Set(params.map((node) => node.id));
@@ -196,6 +198,7 @@ const Flow = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodesDelete={onNodesDelete}
+        onInit={() => initializeFromDb(flowId as string)}
         onConnect={onConnect}
         onPaneClick={onPaneClick}
         proOptions={{ hideAttribution: true }}

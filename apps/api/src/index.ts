@@ -9,6 +9,7 @@ import { sessionInjector } from "./middlewares";
 import { generate } from "./services/generate";
 import { publish } from "./services/publish";
 import {
+  getFlowAndNodeContentFromDb,
   syncDeleteNodeContent,
   syncFlow,
   syncNodeContent
@@ -41,13 +42,18 @@ app.post(
 );
 app.post(
   "/sync/node",
-  zValidator("json", z.object({ node: z.string() })),
+  zValidator("json", z.object({ node: z.string(), flowId: z.string() })),
   syncNodeContent
 );
 app.delete(
   "/sync/node",
-  zValidator("json", z.object({ id: z.string() })),
+  zValidator("json", z.object({ id: z.string(), flowId: z.string() })),
   syncDeleteNodeContent
+);
+app.get(
+  "/sync/all",
+  zValidator("query", z.object({ flowId: z.string() })),
+  getFlowAndNodeContentFromDb
 );
 
 serve(

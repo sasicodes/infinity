@@ -1,11 +1,14 @@
 import { Handle, type NodeProps, Position } from "@xyflow/react";
 import clsx from "clsx";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../../lib/idb";
+import { useParams } from "react-router";
+import { loadNodeContent } from "../../lib/idb";
 import { Content } from "./content";
 
 export const CustomNode = ({ id, selected }: NodeProps) => {
-  const nodeData = useLiveQuery(() => db.nodeContent.get(id), [id]);
+  const params = useParams();
+  const flowId = params.flowId;
+  const nodeData = useLiveQuery(() => loadNodeContent(id), [id]);
   const hasGeneratedContent = nodeData?.generated;
 
   return (
@@ -22,7 +25,7 @@ export const CustomNode = ({ id, selected }: NodeProps) => {
         className="!bg-white !border-neutral-300 -translate-x-2 !size-2 transition-colors"
       />
       <div className="flex cursor-default flex-col items-center justify-center gap-2">
-        <Content nodeId={id} />
+        <Content nodeId={id} flowId={flowId as string} />
       </div>
       <Handle
         type="source"
