@@ -14,13 +14,14 @@ import {
   syncFlow,
   syncNodeContent
 } from "./services/sync";
-import { upload } from "./services/upload";
+import { upload, uploadJson } from "./services/upload";
 
 const app = new Hono();
 
 app.use("*", cors()).use(sessionInjector);
 
 app.post("/upload", upload);
+app.post("/upload-json", uploadJson);
 app.post("/generate", generate);
 app.post(
   "/publish",

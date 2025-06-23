@@ -21,6 +21,12 @@ const client = new S3({
 });
 
 export const upload = async (c: Context) => {
+  const user = c.get("user");
+
+  if (!user) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
   try {
     const fileKey = uuidv4();
     const file = (await c.req.formData()).get("file") as unknown as File;
@@ -53,6 +59,46 @@ export const upload = async (c: Context) => {
     return c.json({
       success: false,
       message: "Failed to upload file"
+    });
+  }
+};
+
+export const uploadJson = async (c: Context) => {
+  const user = c.get("user");
+
+  if (!user) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  try {
+    const fileKey = uuidv4();
+    const jsonData = await c.req.json();
+
+    const params: PutObjectCommandInput = {
+      Bucket: R2_BUCKET_NAME,
+      Key: fileKey,
+      Body: JSON.stringify(jsonData),
+      ContentType: "text/plain"
+    };
+
+    const task = new Upload({
+      client,
+      params,
+      queueSize: 10,
+      partSize: 10 * 1024 * 1024
+    });
+    await task.done();
+
+    return c.json({
+      success: true,
+      url: `https://r2.tape.xyz/${fileKey}`,
+      type: "text/plain"
+    });
+  } catch (error) {
+    console.error("[Upload JSON] Error:", error);
+    return c.json({
+      success: false,
+      message: "Failed to upload JSON"
     });
   }
 };

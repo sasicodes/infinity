@@ -2,17 +2,17 @@ import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { ZeroDevSmartWalletConnectors } from "@dynamic-labs/ethereum-aa";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
+import { aeneid } from "@story-protocol/core-sdk";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, WagmiProvider, createConfig } from "wagmi";
-import { storyAeneid } from "wagmi/chains";
 
 const queryClient = new QueryClient();
 
 const config = createConfig({
-  chains: [storyAeneid],
+  chains: [aeneid],
   multiInjectedProviderDiscovery: false,
   transports: {
-    [storyAeneid.id]: http()
+    [aeneid.id]: http()
   }
 });
 
