@@ -21,8 +21,8 @@ export const systemPrompt = `
 
       5. If the user requests animations, implement smooth animations using Motion.js with the correct JavaScript syntax,
       (BELOW IS JUST EXAMPLE, BE CREATIVE AND USE YOUR IMAGINATION):
-      - Use animate() function for animations - Example: animate(".button", { scale: 1.1 }, { type: "spring", stiffness: 300 })
-      - For hover effects, use event listeners with animate()- Example: 
+      - Use animate() function for animations only if needed - Example: animate(".button", { scale: 1.1 }, { type: "spring", stiffness: 300 })
+      - For hover effects, use event listeners with animate() only if needed - Example: 
         <button class="button">Hover me</button>
         <script>
           const button = document.querySelector('.button');
@@ -47,6 +47,7 @@ export const systemPrompt = `
       - Implement smooth transitions and animations using Motion.js animate() function
       - Be optimized for performance
       - Follow accessibility best practices
+      - No title or description, just the requested component
       - Use Inter font throughout the design
   </requirements>
 

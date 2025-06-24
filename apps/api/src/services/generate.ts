@@ -27,19 +27,24 @@ export const generate = async (c: Context) => {
 };
 
 export const categorizePost = async (content: string) => {
-  const { object } = await generateObject({
-    model: categoryModel,
-    system: systemPrompt,
-    schema: z.object({
-      category: z.enum(CATEGORIES)
-    }),
-    prompt: `
+  try {
+    const { object } = await generateObject({
+      model: categoryModel,
+      system: systemPrompt,
+      schema: z.object({
+        category: z.enum(CATEGORIES)
+      }),
+      prompt: `
     This is a post content:
     ${content}
 
     Based on the post content, categorize the post. Fallback to "any" if you are not sure.
     `
-  });
+    });
 
-  return object.category ?? "any";
+    return object.category ?? "any";
+  } catch (error) {
+    console.error("🚀 ~ categorizePost ~ error:", error);
+    return "any";
+  }
 };

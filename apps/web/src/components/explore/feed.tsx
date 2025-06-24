@@ -9,7 +9,7 @@ export const ExploreFeed = ({ category }: { category: string }) => {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
       queryKey: ["posts", "category", category],
-      queryFn: ({ pageParam }) => getPostsByCategory(category, pageParam),
+      queryFn: ({ pageParam }) => getPostsByCategory(category.toLowerCase(), pageParam),
       initialPageParam: 1,
       getNextPageParam: (lastPage) => {
         if (lastPage.pagination.page < lastPage.pagination.totalPages) {

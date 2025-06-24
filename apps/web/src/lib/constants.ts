@@ -28,7 +28,7 @@ export const CATEGORIES = [
   "pagination",
 
   "card",
-  "Grid",
+  "grid",
   "aspect-ratio",
   "separator",
   "sheet",
