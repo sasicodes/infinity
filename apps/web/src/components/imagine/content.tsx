@@ -20,11 +20,9 @@ export const Content = ({ nodeId, flowId }: ContentProps) => {
 
   // Use live query to read from IndexedDB
   const nodeData = useLiveQuery(() => loadNodeContent(nodeId), [nodeId]);
-  const edges = useLiveQuery(() =>
-    db.flowData
-      .orderBy("id")
-      .last()
-      .then((data) => data?.edges ?? [])
+  const edges = useLiveQuery(
+    () => db.flowData.get(flowId).then((data) => data?.edges ?? []),
+    [flowId]
   );
 
   const content = nodeData?.content || "";

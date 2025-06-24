@@ -5,3 +5,6 @@ const openrouter = createOpenRouter({
 });
 
 export const codeModel = openrouter("mistralai/devstral-small:free");
+export const categoryModel = openrouter(
+  "mistralai/mistral-small-3.2-24b-instruct:free"
+);

@@ -1,5 +1,6 @@
 import type { Context } from "hono";
 import { prisma } from "../db";
+import { categorizePost } from "./generate";
 
 export const createPost = async (c: Context) => {
   const { html, ipId, nodeId } = await c.req.json();
@@ -10,9 +11,18 @@ export const createPost = async (c: Context) => {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
+  const category = await categorizePost(html);
+
   try {
     await prisma.post.create({
-      data: { html, ipId, nodeId, userId: user.id, username: user.username }
+      data: {
+        html,
+        ipId,
+        nodeId,
+        userId: user.id,
+        username: user.username,
+        category
+      }
     });
     return c.json({ success: true });
   } catch (error) {

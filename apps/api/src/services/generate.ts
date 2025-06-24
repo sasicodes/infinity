@@ -1,7 +1,9 @@
-import { streamText } from "ai";
+import { generateObject, streamText } from "ai";
 import type { Context } from "hono";
 import { stream } from "hono/streaming";
-import { codeModel } from "../model";
+import { z } from "zod";
+import { CATEGORIES } from "../constants";
+import { categoryModel, codeModel } from "../model";
 import { systemPrompt } from "../prompt";
 
 export const generate = async (c: Context) => {
@@ -22,4 +24,22 @@ export const generate = async (c: Context) => {
   c.header("Content-Type", "text/plain; charset=utf-8");
 
   return stream(c, (stream) => stream.pipe(result.toDataStream()));
+};
+
+export const categorizePost = async (content: string) => {
+  const { object } = await generateObject({
+    model: categoryModel,
+    system: systemPrompt,
+    schema: z.object({
+      category: z.enum(CATEGORIES)
+    }),
+    prompt: `
+    This is a post content:
+    ${content}
+
+    Based on the post content, categorize the post. Fallback to "any" if you are not sure.
+    `
+  });
+
+  return object.category ?? "any";
 };

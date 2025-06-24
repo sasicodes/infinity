@@ -19,6 +19,7 @@ model Post {
   userId   String
   nodeId   String
   username String
+  category String @default("any")
 
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
