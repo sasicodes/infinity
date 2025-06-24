@@ -14,6 +14,22 @@ export const injectStyles = (content: string) => {
   return content.replace("</head>", `${styles}</head>`);
 };
 
+export const injectStylesForPost = (content: string) => {
+  const styles = `
+    <style>
+      html, body {
+        transform: scale(0.9);
+        -ms-overflow-style: none !important;
+        scrollbar-width: none !important;
+      }
+      ::-webkit-scrollbar {
+        display: none !important;
+      }
+    </style>
+  `;
+  return content.replace("</head>", `${styles}</head>`);
+};
+
 // 5m ago, 1h ago, 1d ago, 1w ago, 1mo ago, 1y ago
 export const formatDate = (date: Date | string) => {
   const now = new Date();

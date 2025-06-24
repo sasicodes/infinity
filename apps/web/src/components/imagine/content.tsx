@@ -34,11 +34,11 @@ export const Content = ({ nodeId, flowId }: ContentProps) => {
 
   // Get parent nodes and their content
   const parentContent = useLiveQuery(async () => {
-    if (!edges?.length) return { images: 0, texts: 0 };
+    if (!edges?.length) return { images: 0, texts: 0, parentContents: [] };
 
     // Check if node has any right-side connections
     const hasRightConnections = edges.some((edge) => edge.source === nodeId);
-    if (hasRightConnections) return { images: 0, texts: 0 };
+    if (hasRightConnections) return { images: 0, texts: 0, parentContents: [] };
 
     const parentNodes = new Set<string>();
     const traverse = (currentId: string) => {

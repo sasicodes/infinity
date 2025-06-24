@@ -1,6 +1,6 @@
 import { Loader } from "lucide-react";
 import { useState } from "react";
-import { formatDate, injectStyles } from "../../lib/functions";
+import { formatDate, injectStylesForPost } from "../../lib/functions";
 import { Avatar } from "../home/avatar";
 import type { Post } from "../home/type";
 
@@ -10,7 +10,7 @@ interface ItemProps {
 
 export const Item = ({ post }: ItemProps) => {
   const [isLoading, setIsLoading] = useState(true);
-  const contentWithStyles = injectStyles(post.html);
+  const contentWithStyles = injectStylesForPost(post.html);
 
   return (
     <div className="p-4">
