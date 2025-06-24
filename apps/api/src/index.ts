@@ -7,7 +7,12 @@ import { cors } from "hono/cors";
 import { z } from "zod";
 import { sessionInjector } from "./middlewares";
 import { generate } from "./services/generate";
-import { createPost, getAllPosts, getMyPosts } from "./services/post";
+import {
+  createPost,
+  getAllPosts,
+  getMyPosts,
+  getPostsByCategory
+} from "./services/post";
 import {
   getFlowAndNodeContentFromDb,
   syncDeleteNodeContent,
@@ -61,6 +66,11 @@ app.get(
   "/posts/me",
   zValidator("query", z.object({ page: z.string(), pageSize: z.string() })),
   getMyPosts
+);
+app.get(
+  "/posts/category",
+  zValidator("query", z.object({ category: z.string() })),
+  getPostsByCategory
 );
 
 serve(
