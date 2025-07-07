@@ -45,18 +45,37 @@ export const Actions = ({ post }: ActionsProps) => {
   return (
     <div className="mt-4 flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="!cursor-not-allowed"
+          title="Coming soon"
+        >
           <Heart className="size-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="!cursor-not-allowed"
+          title="Coming soon"
+        >
           <MessageCircle className="size-4" />
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="!cursor-not-allowed"
+          title="Coming soon"
+        >
           <Share className="size-4" />
         </Button>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="secondary">
+        <Button
+          variant="secondary"
+          className="!cursor-not-allowed"
+          title="Coming soon"
+        >
           <Repeat className="mr-1.5 size-4" />
           <span>Remix</span>
         </Button>
