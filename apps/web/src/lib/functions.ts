@@ -51,7 +51,10 @@ export const formatDate = (date: Date | string) => {
   if (diffHours < 24) {
     return `${diffHours}h ago`;
   }
-  if (diffDays < 7) {
+  if (diffDays < 30) {
+    return `${diffDays}d ago`;
+  }
+  if (diffMonths === 0) {
     return `${diffDays}d ago`;
   }
   if (diffMonths < 12) {

@@ -132,13 +132,21 @@ export const GenerateContent = ({
         }
       });
       const ipId = response.ipId;
+      const tokenId = response.tokenId?.toString() || "";
+      const licenseTermsId = response.licenseTermsIds?.[0]?.toString() || "";
       console.info(
-        `Root IPA created at transaction hash ${response.txHash}, IPA ID: ${response.ipId}`
+        `Root IPA created at transaction hash ${response.txHash}, IPA ID: ${response.ipId}, Token ID: ${tokenId}, License Terms ID: ${licenseTermsId}`
       );
       if (!ipId) {
         return console.error("Failed to create IP");
       }
-      const success = await createPost(ipId, nodeId, content);
+      const success = await createPost(
+        ipId,
+        tokenId,
+        licenseTermsId,
+        nodeId,
+        content
+      );
       if (!success) {
         return console.error("Failed to create post");
       }

@@ -56,6 +56,8 @@ export const syncFlowAndNodeContentFromDb = async (flowId: string) => {
 
 export const createPost = async (
   ipId: string,
+  tokenId: string,
+  licenseTermsId: string,
   nodeId: string,
   html: string
 ) => {
@@ -65,7 +67,20 @@ export const createPost = async (
       "Content-Type": "application/json",
       Authorization: `Bearer ${getAuthToken()}`
     },
-    body: JSON.stringify({ ipId, nodeId, html })
+    body: JSON.stringify({ ipId, tokenId, licenseTermsId, nodeId, html })
+  });
+  const result = await response.json();
+  return result.success;
+};
+
+export const updatePurchase = async (postId: string) => {
+  const response = await fetch(`${API_URL}/post/update-purchase`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getAuthToken()}`
+    },
+    body: JSON.stringify({ postId })
   });
   const result = await response.json();
   return result.success;

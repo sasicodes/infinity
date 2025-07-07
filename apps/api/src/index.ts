@@ -11,7 +11,8 @@ import {
   createPost,
   getAllPosts,
   getMyPosts,
-  getPostsByCategory
+  getPostsByCategory,
+  updatePurchase
 } from "./services/post";
 import {
   getFlowAndNodeContentFromDb,
@@ -56,6 +57,11 @@ app.post(
     z.object({ ipId: z.string(), html: z.string(), nodeId: z.string() })
   ),
   createPost
+);
+app.post(
+  "/post/update-purchase",
+  zValidator("json", z.object({ postId: z.string() })),
+  updatePurchase
 );
 app.get(
   "/posts",

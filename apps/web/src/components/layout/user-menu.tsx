@@ -15,7 +15,11 @@ export const UserMenu = () => {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger>
-        <Avatar id={user?.username ?? ""} className="size-7" />
+        <Avatar
+          id={user?.username ?? ""}
+          className="size-7"
+          src={`https://api.dicebear.com/9.x/initials/svg?seed=${user?.username}`}
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-44" sideOffset={10}>
         <DropdownMenuItem onClick={() => navigate(`/u/${user?.username}`)}>

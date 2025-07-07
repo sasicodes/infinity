@@ -1,6 +1,7 @@
 import { Loader } from "lucide-react";
 import { useState } from "react";
 import { formatDate, injectStylesForPost } from "../../lib/functions";
+import { Actions } from "../home/actions";
 import { Avatar } from "../home/avatar";
 import type { Post } from "../home/type";
 
@@ -41,6 +42,7 @@ export const Item = ({ post }: ItemProps) => {
           onLoad={() => setIsLoading(false)}
         />
       </div>
+      <Actions post={post} />
     </div>
   );
 };

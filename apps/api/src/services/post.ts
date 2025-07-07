@@ -3,7 +3,7 @@ import { prisma } from "../db";
 import { categorizePost } from "./generate";
 
 export const createPost = async (c: Context) => {
-  const { html, ipId, nodeId } = await c.req.json();
+  const { html, ipId, tokenId, licenseTermsId, nodeId } = await c.req.json();
 
   const user = c.get("user");
 
@@ -18,6 +18,8 @@ export const createPost = async (c: Context) => {
       data: {
         html,
         ipId,
+        tokenId,
+        licenseTermsId,
         nodeId,
         userId: user.id,
         username: user.username,
@@ -132,4 +134,29 @@ export const getPostsByCategory = async (c: Context) => {
     },
     success: true
   });
+};
+
+export const updatePurchase = async (c: Context) => {
+  const user = c.get("user");
+
+  if (!user) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const { postId } = await c.req.json();
+
+  const post = await prisma.post.findUnique({
+    where: { id: postId, userId: user.id }
+  });
+
+  if (!post) {
+    return c.json({ error: "Post not found" }, 404);
+  }
+
+  await prisma.post.update({
+    where: { id: postId },
+    data: { hasLicense: true }
+  });
+
+  return c.json({ success: true });
 };
