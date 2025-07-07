@@ -1,4 +1,5 @@
 import {
+  Copy,
   Heart,
   IdCard,
   LoaderIcon,
@@ -89,6 +90,18 @@ export const Actions = ({ post }: ActionsProps) => {
             </>
           )}
         </Button>
+        {post.hasLicense || isSuccess ? (
+          <Button
+            size="icon"
+            variant="secondary"
+            title="Copy Code"
+            onClick={() => {
+              navigator.clipboard.writeText(post.html);
+            }}
+          >
+            <Copy className="size-3.5" />
+          </Button>
+        ) : null}
       </div>
     </div>
   );
