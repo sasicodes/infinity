@@ -26,6 +26,7 @@ const app = new Hono();
 
 app.use("*", cors()).use(sessionInjector);
 
+app.get("/", (c) => c.text("ok"));
 app.post("/upload", upload);
 app.post("/upload-json", uploadJson);
 app.post("/generate", generate);
