@@ -1,5 +1,9 @@
-export const API_URL = "http://localhost:3000";
-export const WEBSITE_URL = "https://infinity.vercel.app";
+const IS_PROD = process.env.NODE_ENV === "production";
+
+export const API_URL = IS_PROD
+  ? "https://infinity-production-8dd2.up.railway.app"
+  : "http://localhost:3000";
+export const WEBSITE_URL = "https://infinity-web-demo.vercel.app";
 
 export const PIL_PDF_URI =
   "https://github.com/piplabs/pil-document/blob/v1.3.0/Story%20Foundation%20-%20Programmable%20IP%20License%20(1.31.25).pdf";
