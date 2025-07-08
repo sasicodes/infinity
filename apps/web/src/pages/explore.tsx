@@ -4,7 +4,7 @@ import { tw } from "../components/ui/tw";
 import { CATEGORIES } from "../lib/constants";
 
 export const Explore = () => {
-  const [selectedCategory, setSelectedCategory] = useState("any");
+  const [selectedCategory, setSelectedCategory] = useState("button");
   return (
     <div>
       <div className="flex gap-2 overflow-x-auto px-5 pt-5">
