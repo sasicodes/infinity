@@ -80,7 +80,19 @@ export const Actions = ({ post }: ActionsProps) => {
           <Repeat className="mr-1.5 size-4" />
           <span>Remix</span>
         </Button>
-        <Button variant="secondary" onClick={buy} disabled={isLoading}>
+        {post.hasLicense || isSuccess ? (
+          <Button
+            size="icon"
+            variant="secondary"
+            title="Copy Snippet"
+            onClick={() => {
+              navigator.clipboard.writeText(post.html);
+            }}
+          >
+            <Copy className="size-3.5" />
+          </Button>
+        ) : null}
+        <Button onClick={buy} disabled={isLoading}>
           {isLoading ? (
             <LoaderIcon className="size-3 animate-spin" />
           ) : (
@@ -90,18 +102,6 @@ export const Actions = ({ post }: ActionsProps) => {
             </>
           )}
         </Button>
-        {post.hasLicense || isSuccess ? (
-          <Button
-            size="icon"
-            variant="secondary"
-            title="Copy Code"
-            onClick={() => {
-              navigator.clipboard.writeText(post.html);
-            }}
-          >
-            <Copy className="size-3.5" />
-          </Button>
-        ) : null}
       </div>
     </div>
   );
