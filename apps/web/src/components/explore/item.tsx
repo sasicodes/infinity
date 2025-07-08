@@ -1,9 +1,9 @@
 import { Loader } from "lucide-react";
 import { useState } from "react";
-import { formatDate, injectStylesForPost } from "../../lib/functions";
+import { injectStylesForPost } from "../../lib/functions";
 import { Actions } from "../home/actions";
-import { Avatar } from "../home/avatar";
 import type { Post } from "../home/type";
+import { User } from "../home/user";
 
 interface ItemProps {
   post: Post;
@@ -15,18 +15,7 @@ export const Item = ({ post }: ItemProps) => {
 
   return (
     <div className="p-4">
-      <div className="flex items-center gap-2">
-        <Avatar id={post.username} />
-        <div className="flex flex-col">
-          <span className="font-medium text-sm">{post.username}</span>
-          <span
-            className="text-neutral-400 text-xs"
-            title={post.createdAt.toLocaleString()}
-          >
-            {formatDate(post.createdAt)}
-          </span>
-        </div>
-      </div>
+      <User username={post.username} createdAt={post.createdAt} />
       <div className="mt-4 text-neutral-500">{post.content}</div>
       <div className="relative mt-4 flex aspect-video items-center justify-center overflow-hidden rounded-3xl border border-neutral-200">
         {isLoading && (
