@@ -16,8 +16,6 @@ export enum ContentStandard {
 }
 
 export const CATEGORIES = [
-  "any",
-
   "button",
   "text",
   "image",
@@ -81,5 +79,7 @@ export const CATEGORIES = [
   "carousel",
   "resizable",
   "infinite-scroll",
-  "dual-range-slider"
+  "dual-range-slider",
+
+  "any"
 ] as const;
