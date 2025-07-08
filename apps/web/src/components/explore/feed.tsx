@@ -27,7 +27,7 @@ export const ExploreFeed = ({ category }: { category: string }) => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-6">
-        <Loader />
+        <Loader iconClassName="size-4" />
       </div>
     );
   }
