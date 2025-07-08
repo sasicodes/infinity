@@ -73,14 +73,18 @@ export const createPost = async (
   return result.success;
 };
 
-export const updatePurchase = async (postId: string) => {
+export const updatePurchase = async (
+  postId: string,
+  tokenId: string,
+  txHash: string
+) => {
   const response = await fetch(`${API_URL}/post/update-purchase`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getAuthToken()}`
     },
-    body: JSON.stringify({ postId })
+    body: JSON.stringify({ postId, tokenId, txHash })
   });
   const result = await response.json();
   return result.success;

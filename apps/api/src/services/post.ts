@@ -48,7 +48,16 @@ export const getAllPosts = async (c: Context) => {
     prisma.post.findMany({
       skip,
       take: pageSize,
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: {
+            licenses: {
+              where: { userId: user.id }
+            }
+          }
+        }
+      }
     }),
     prisma.post.count({})
   ]);
@@ -81,7 +90,16 @@ export const getMyPosts = async (c: Context) => {
       where: { userId: user.id },
       skip,
       take: pageSize,
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: {
+            licenses: {
+              where: { userId: user.id }
+            }
+          }
+        }
+      }
     }),
     prisma.post.count({
       where: { userId: user.id }
@@ -117,7 +135,16 @@ export const getPostsByCategory = async (c: Context) => {
       where: { category: { contains: category } },
       skip,
       take: pageSize,
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: {
+            licenses: {
+              where: { userId: user.id }
+            }
+          }
+        }
+      }
     }),
     prisma.post.count({
       where: { category: { contains: category } }
@@ -143,19 +170,23 @@ export const updatePurchase = async (c: Context) => {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
-  const { postId } = await c.req.json();
+  const { postId, tokenId, txHash } = await c.req.json();
 
   const post = await prisma.post.findUnique({
-    where: { id: postId, userId: user.id }
+    where: { id: postId }
   });
 
   if (!post) {
     return c.json({ error: "Post not found" }, 404);
   }
 
-  await prisma.post.update({
-    where: { id: postId },
-    data: { hasLicense: true }
+  await prisma.license.create({
+    data: {
+      postId,
+      userId: user.id,
+      tokenId,
+      txHash
+    }
   });
 
   return c.json({ success: true });

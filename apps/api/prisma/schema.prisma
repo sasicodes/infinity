@@ -18,11 +18,11 @@ model Post {
   ipId           String
   tokenId        String?
   licenseTermsId String?
-  hasLicense     Boolean @default(false)
   userId         String
   nodeId         String
   username       String
-  category       String  @default("any")
+  category       String    @default("any")
+  licenses       License[]
 
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
@@ -49,4 +49,17 @@ model Node {
 
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
+}
+
+model License {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String
+  tokenId   String
+  txHash    String
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+
+  @@index([userId])
 }

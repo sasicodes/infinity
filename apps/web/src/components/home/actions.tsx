@@ -36,8 +36,12 @@ export const Actions = ({ post }: ActionsProps) => {
       maxRevenueShare: 100 // default
     });
 
-    if (response.txHash) {
-      await updatePurchase(post.id);
+    if (response.txHash && response.licenseTokenIds) {
+      await updatePurchase(
+        post.id,
+        response.licenseTokenIds[0].toString(),
+        response.txHash
+      );
       setIsSuccess(true);
     }
     setIsLoading(false);
@@ -80,7 +84,7 @@ export const Actions = ({ post }: ActionsProps) => {
           <Repeat className="mr-1.5 size-4" />
           <span>Remix</span>
         </Button>
-        {post.hasLicense || isSuccess ? (
+        {post._count.licenses > 0 || isSuccess ? (
           <Button
             size="icon"
             variant="secondary"
@@ -98,7 +102,9 @@ export const Actions = ({ post }: ActionsProps) => {
           ) : (
             <>
               <IdCard className="mr-1.5 size-4" />
-              <span>Buy {isSuccess || post.hasLicense ? "again" : ""}</span>
+              <span>
+                Buy {isSuccess || post._count.licenses > 0 ? "again" : ""}
+              </span>
             </>
           )}
         </Button>
