@@ -4,7 +4,8 @@ const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY
 });
 
-export const codeModel = openrouter("mistralai/devstral-small:free");
+// export const codeModel = openrouter("google/gemini-2.5-flash");
+export const codeModel = openrouter("google/gemini-2.0-flash-exp:free");
 export const categoryModel = openrouter(
   "mistralai/mistral-small-3.2-24b-instruct:free"
 );

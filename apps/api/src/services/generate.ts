@@ -14,16 +14,21 @@ export const generate = async (c: Context) => {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
-  const result = streamText({
-    model: codeModel,
-    system: systemPrompt,
-    prompt: prompt
-  });
+  try {
+    const result = streamText({
+      model: codeModel,
+      system: systemPrompt,
+      prompt: prompt
+    });
 
-  c.header("X-Vercel-AI-Data-Stream", "v1");
-  c.header("Content-Type", "text/plain; charset=utf-8");
+    c.header("X-Vercel-AI-Data-Stream", "v1");
+    c.header("Content-Type", "text/plain; charset=utf-8");
 
-  return stream(c, (stream) => stream.pipe(result.toDataStream()));
+    return stream(c, (stream) => stream.pipe(result.toDataStream()));
+  } catch (error) {
+    console.error("🚀 ~ generate ~ error:", error);
+    return c.json({ error: "Internal server error" }, 500);
+  }
 };
 
 export const categorizePost = async (content: string) => {

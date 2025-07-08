@@ -108,7 +108,9 @@ export const Content = ({ nodeId, flowId }: ContentProps) => {
   const handleGenerateCode = async () => {
     setStreaming(true);
     const imageUrls =
-      parentContent?.parentContents?.map((content) => content?.imageUrl) || [];
+      parentContent?.parentContents
+        ?.filter((content) => content?.imageUrl)
+        .map((content) => content?.imageUrl) || [];
 
     const content =
       parentContent?.parentContents
