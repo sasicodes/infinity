@@ -6,6 +6,10 @@ A full-stack web application for design engineers with visual flow editor and so
 <img width="3482" height="1806" alt="image" src="https://github.com/user-attachments/assets/8dfc489b-452e-4b51-9359-727028b1c6c0" />
 <img width="1752" height="1090" alt="image" src="https://github.com/user-attachments/assets/94ef542b-a5b4-4970-9b74-443a7de6c53a" />
 
+
+https://github.com/user-attachments/assets/1b50e586-6008-4a2d-bf67-2523d0c33e28
+
+
 ### Features
 
 - **AI Content Generation**: Create text and image content using AI
